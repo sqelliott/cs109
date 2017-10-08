@@ -1,0 +1,15 @@
+
+# HW2 Dijkstra
+
+Graph ADT
+
+  * Dijkstra as class member function
+
+Problem:
+
+  * set of constructors for declaring/initializing a graph
+  * edge has positive cost (distance)
+  * procedure to randomly generate a set of edges w/ pos. distances
+    * undirected graphs
+    * parameters: edge density, distance range
+  * output: average path length calculation
