@@ -14,10 +14,10 @@ public:
 
 
    // return number of vertices in graph
-   unsigned V () const;
+   unsigned V() const;
 
    // number of edges in graph
-   unsigned E () const;
+   unsigned E() const;
 
    // tests whether there is an edge from node x to node y
    bool adjacent( unsigned, unsigned) const;
@@ -27,7 +27,7 @@ public:
 
    void delete_edge( unsigned, unsigned);
 
-   unsigned get_edge_value( unsigned, unsigned) const;
+   double get_edge_value( unsigned, unsigned) const;
 
    void set_edge_value( unsigned, unsigned, double);
 

@@ -22,12 +22,15 @@ Graph::Graph( double density = .1, unsigned _num_nodes = 50){
    std::uniform_real_distribution<double> weight_distr( 1.0, 10.0);
 
    for( unsigned i = 0; i < V(); i++){    
-      // randomly produced value 
-      double value = density_distr(generator);
-      if( value < density){
-         for( unsigned j = 0; j < V(); j++){
+      for( unsigned j = 0; j < V(); j++){
+         // randomly produced value 
+         double value = density_distr(generator);
+         if( value < density){
             double weight = weight_distr(generator);
             set_edge_value( i, j, weight);
+         }
+         else{
+            set_edge_value( i, j, 0.0);
          }
       }
    }
@@ -72,7 +75,7 @@ void Graph::delete_edge( unsigned x, unsigned y){
 
 }
 
-unsigned Graph::get_edge_value( unsigned x, unsigned y) const{
+double Graph::get_edge_value( unsigned x, unsigned y) const{
    return matrix[x][y];
 }
 
@@ -87,9 +90,17 @@ void Graph::set_edge_value( unsigned x, unsigned y, double v){
 }
 
 ostream &operator<<(ostream& stream, const Graph &graph){
+   stream.precision(2);
+
+
    for( unsigned i = 0; i < graph.V(); i++){
       for( unsigned j = 0; j < graph.V(); j++){
-         stream << graph.get_edge_value(i,j) << " ";
+         if( graph.get_edge_value(i,j) == 0){
+            stream << "0.0 ";
+         }
+         else{
+            stream << graph.get_edge_value(i,j) << " ";
+         }
       }
       stream << endl;
    }
@@ -99,8 +110,10 @@ ostream &operator<<(ostream& stream, const Graph &graph){
 
 
 int main(){
-   Graph g = Graph();
+   Graph g = Graph(.1,15);
    cout << "This is my graph" << endl;
    cout << g;
+
+
    return 0;
 }
