@@ -20,11 +20,8 @@ const int NUM_DATA=40;
 
 // Calculates the sum of data stored in a vector
 inline void sum(int& accum, int NUM_DATA, const vector<int>& d ){
-   
    int i;
- 
    accum = 0;
-
    for( i = 0; i < NUM_DATA; ++i){
       accum = accum + d[i];
    }

@@ -3,10 +3,14 @@
 #include "Graph.h"
 #include <random>
 #include <iostream>
+#include <ctime>
 using namespace std;
 
 
-Graph::Graph( double density = .1, unsigned _num_nodes = 50){
+Graph::Graph( double density = .1,
+              unsigned _num_nodes = 50, 
+              unsigned min_cost = 1.0,
+              unsigned max_cost = 10.0){
    // initialize the number of nodes in the graph
    num_nodes = _num_nodes;
    
@@ -19,18 +23,21 @@ Graph::Graph( double density = .1, unsigned _num_nodes = 50){
    // random
    std::default_random_engine generator;
    std::uniform_real_distribution<double> density_distr( 0.0, 1.0);
-   std::uniform_real_distribution<double> weight_distr( 1.0, 10.0);
+   std::uniform_real_distribution<double> weight_distr( min_cost, max_cost);
 
    for( unsigned i = 0; i < V(); i++){    
       for( unsigned j = 0; j < V(); j++){
-         // randomly produced value 
-         double value = density_distr(generator);
-         if( value < density){
-            double weight = weight_distr(generator);
-            set_edge_value( i, j, weight);
-         }
-         else{
-            set_edge_value( i, j, 0.0);
+         // no self-loops
+         if( i != j){
+            // randomly produced value 
+            double value = density_distr( generator);
+            if( value < density){
+               double weight = weight_distr( generator);
+               set_edge_value( i, j, weight);
+            }
+            else{
+               set_edge_value( i, j, 0.0);
+            }
          }
       }
    }
@@ -110,10 +117,18 @@ ostream &operator<<(ostream& stream, const Graph &graph){
 
 
 int main(){
-   Graph g = Graph(.1,15);
+   Graph g = Graph(.5,10);
    cout << "This is my graph" << endl;
    cout << g;
 
+   cout << "5's neighbors are: ";
+   vector<unsigned> n = g.neighbors(5);
+   for( unsigned x : n){
+      cout << x << " ";
+   }
+   cout << endl;
+
+   cout << "num edges: " << g.E() << endl;
 
    return 0;
 }

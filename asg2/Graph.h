@@ -10,7 +10,7 @@ class Graph {
 public:
 
    // constructors
-   Graph( double density, unsigned num_nodes);
+   Graph( double density, unsigned num_nodes, unsigned min_cost, unsigned max_cost);
 
 
    // return number of vertices in graph
