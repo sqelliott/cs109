@@ -3,25 +3,27 @@
 #include "Graph.h"
 #include <random>
 #include <iostream>
+#include <queue>
 #include <ctime>
 using namespace std;
 
-
+// Graph() constructor
 Graph::Graph( double density = .1,
-              unsigned _num_nodes = 50, 
+              unsigned num_nodes = 50, 
               unsigned min_cost = 1.0,
               unsigned max_cost = 10.0){
    // initialize the number of nodes in the graph
-   num_nodes = _num_nodes;
+   this->num_nodes = num_nodes;
    
    // set matrix to correct size
-   matrix.resize(_num_nodes);
-   for( unsigned i = 0; i < _num_nodes; i++){
-      matrix[i].resize(_num_nodes);
+   matrix.resize( V() );
+   for( unsigned i = 0; i < V(); i++){
+      matrix[i].resize( V() );
    }
 
    // random
-   std::default_random_engine generator;
+   std::random_device rd;
+   std::default_random_engine generator(rd());
    std::uniform_real_distribution<double> density_distr( 0.0, 1.0);
    std::uniform_real_distribution<double> weight_distr( min_cost, max_cost);
 
@@ -44,6 +46,8 @@ Graph::Graph( double density = .1,
 }
 
 
+
+// Member Functions
 inline unsigned Graph::V() const{
    return num_nodes;
 }
@@ -97,17 +101,12 @@ void Graph::set_edge_value( unsigned x, unsigned y, double v){
 }
 
 ostream &operator<<(ostream& stream, const Graph &graph){
-   stream.precision(2);
+   stream.precision(1);
 
 
    for( unsigned i = 0; i < graph.V(); i++){
       for( unsigned j = 0; j < graph.V(); j++){
-         if( graph.get_edge_value(i,j) == 0){
-            stream << "0.0 ";
-         }
-         else{
-            stream << graph.get_edge_value(i,j) << " ";
-         }
+         stream << fixed << graph.get_edge_value(i,j) << " ";
       }
       stream << endl;
    }

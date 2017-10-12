@@ -12,6 +12,12 @@ public:
    // constructors
    Graph( double density, unsigned num_nodes, unsigned min_cost, unsigned max_cost);
 
+   // deconstructor
+
+
+   ///////////////////////
+   //  Member functions //
+   ///////////////////////
 
    // return number of vertices in graph
    unsigned V() const;
@@ -41,3 +47,4 @@ private:
    unsigned num_edges;   
 
 };
+
