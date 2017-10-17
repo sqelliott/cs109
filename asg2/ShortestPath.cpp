@@ -11,16 +11,16 @@
 
 
 
-vector<unsigned> ShortestPath::path(Graph g, unsigned src, unsigned end){
+vector<int> ShortestPath::path(Graph g, int src, int end){
    
-   vector<unsigned> dist( g.V() );   
+   vector<int> dist( g.V() );   
    vector<int> prev( g.V(), -1);
    MyQueue<Node> queue;
-   vector<unsigned> path;
+   vector<int> path;
 
-   for( unsigned i = 0; i < g.V(); i++){
+   for( int i = 0; i < g.V(); i++){
       if( i != src){
-         dist[i] = numeric_limits<unsigned>::max();
+         dist[i] = numeric_limits<int>::max();
       }
    }
 
@@ -33,7 +33,7 @@ vector<unsigned> ShortestPath::path(Graph g, unsigned src, unsigned end){
 
       if( curr_node.v == end){
          path.push_back(end);
-         unsigned node = end;
+         int node = end;
          while( prev[node] != src){
             node = prev[node];
             path.push_back(node);
@@ -43,9 +43,9 @@ vector<unsigned> ShortestPath::path(Graph g, unsigned src, unsigned end){
          return path;
       }
 
-      vector<unsigned> curr_node_neighbors = g.neighbors(curr_node.v);
-      for( unsigned j = 0; j < curr_node_neighbors.size(); j++){
-         unsigned cost = dist[curr_node.v] + 
+      vector<int> curr_node_neighbors = g.neighbors(curr_node.v);
+      for( int j = 0; j < curr_node_neighbors.size(); j++){
+         int cost = dist[curr_node.v] + 
                          g.get_edge_value(curr_node.v, j);
          if( cost < dist[j]){
             //queue.remove( Node(j, dist[j]));
@@ -59,6 +59,6 @@ vector<unsigned> ShortestPath::path(Graph g, unsigned src, unsigned end){
 }
 
 /*
-double ShortestPath::path_size( unsigned u, unsigned w){
+double ShortestPath::path_size( int u, int w){
 
 }*/

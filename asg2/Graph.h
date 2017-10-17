@@ -3,6 +3,7 @@
 // Header file for GraphADT
 #include <vector>
 #include <iostream>
+#include <string>
 using namespace std;
 
 #pragma once
@@ -11,7 +12,10 @@ class Graph {
 public:
 
    // constructors
-   Graph( double density, unsigned num_nodes, unsigned min_cost, unsigned max_cost);
+   Graph( double density, int num_nodes, 
+          double min_cost, double max_cost); // default
+
+   Graph( string );
 
    // deconstructor
 
@@ -21,26 +25,26 @@ public:
    //////////////////////////////
 
    // return number of vertices in graph
-   unsigned V() const;
+   int V() const;
    // number of edges in graph
-   unsigned E() const;
+   int E() const;
    // tests whether there is an edge from node x to node y
-   bool adjacent( unsigned, unsigned) const;
+   bool adjacent( int, int) const;
    // lists all neightbors of node x
-   vector<unsigned> neighbors( unsigned);
-   void delete_edge( unsigned, unsigned);
-   double get_edge_value( unsigned, unsigned) const;
-   void set_edge_value( unsigned, unsigned, double);
+   vector<int> neighbors( int);
+   void delete_edge( int, int);
+   double get_edge_value( int, int) const;
+   void set_edge_value( int, int, double);
 
-   friend unsigned num_vertices( Graph);
+   friend int num_vertices( Graph);
    friend ostream &operator<<(ostream &stream, const Graph &);
 
 private:
 
    vector<vector<double>> matrix;
 
-   unsigned num_nodes;
-   unsigned num_edges;   
+   int num_nodes;
+   int num_edges;   
 
 };
 

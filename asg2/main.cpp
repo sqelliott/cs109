@@ -8,16 +8,19 @@
 int main(){
 
 
-   Graph g(.3, 100, 1, 10);
+   //Graph g(.7, 8, 1, 10);
 
+   //cout << g;
 
+   Graph g("graph1.txt");
+   cout << g;
 
    ShortestPath sp;
-   unsigned s = 0, d = 34;
-   vector<unsigned> path = sp.path(g, s,d);
+   int s = 0, d = 4;
+   vector<int> path = sp.path(g, s,d);
    
-   cout << "The shortest path from 0 to 2 is: ";
-   for( unsigned x : path ){
+   cout << "The shortest path from "<< s << " to " << d << " is: ";
+   for( int x : path ){
       cout << x << " ";
    }
    cout << endl;

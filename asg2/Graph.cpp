@@ -3,21 +3,22 @@
 #include "Graph.h"
 #include <random>
 #include <iostream>
+#include <fstream>
 #include <queue>
 #include <ctime>
 using namespace std;
 
 // Graph() constructor
 Graph::Graph( double density = .1,
-              unsigned num_nodes = 50, 
-              unsigned min_cost = 1.0,
-              unsigned max_cost = 10.0){
+              int num_nodes = 50, 
+              double min_cost = 1.0,
+              double max_cost = 10.0){
    // initialize the number of nodes in the graph
    this->num_nodes = num_nodes;
    
    // set matrix to correct size
    matrix.resize( V() );
-   for( unsigned i = 0; i < V(); i++){
+   for( int i = 0; i < V(); i++){
       matrix[i].resize( V() );
    }
 
@@ -27,8 +28,8 @@ Graph::Graph( double density = .1,
    std::uniform_real_distribution<double> density_distr( 0.0, 1.0);
    std::uniform_real_distribution<double> weight_distr( min_cost, max_cost);
 
-   for( unsigned i = 0; i < V(); i++){    
-      for( unsigned j = 0; j < V(); j++){
+   for( int i = 0; i < V(); i++){    
+      for( int j = 0; j < V(); j++){
          // no self-loops
          if( i != j){
             // randomly produced value 
@@ -45,27 +46,61 @@ Graph::Graph( double density = .1,
    }
 }
 
+Graph::Graph( string file){
+   ifstream input;
+   input.open(file, ifstream::in);
+
+   if(!input){
+      cerr << "Unable to open file " << file;
+      exit(1);
+   }
+
+   if(input >> num_nodes){
+      this->num_nodes = num_nodes;
+   }
+   else{
+      cerr << "Incorrect input format";
+      exit(1);
+   }
+
+   matrix.resize(V());
+   for( int i = 0; i < V(); i++){
+      matrix[i].resize(V());
+   }
+
+   int num_input_weights = V() * ( V() +1) /2; 
+   int w;
+
+   for(int i = 0; i < V(); i++){
+      for( int j = 0; j < V(); j++){
+         input >> w;
+
+         set_edge_value(i,j,w);
+      }
+   }
+   
+}
 
 
 // Member Functions
-inline unsigned Graph::V() const{
+inline int Graph::V() const{
    return num_nodes;
 }
 
 
-inline unsigned Graph::E() const{
+inline int Graph::E() const{
    return num_edges;
 }
 
 
-inline bool Graph::adjacent( unsigned x, unsigned y) const{
+inline bool Graph::adjacent( int x, int y) const{
    return (get_edge_value(x,y) != 0);   
 }
 
 
-vector<unsigned> Graph::neighbors( unsigned x) {
-   vector<unsigned> neighbors;
-   for( unsigned i = 0; i < V(); i++){
+vector<int> Graph::neighbors( int x) {
+   vector<int> neighbors;
+   for( int i = 0; i < V(); i++){
       if( get_edge_value(x,i) != 0){
          neighbors.push_back(i);
       }
@@ -75,7 +110,7 @@ vector<unsigned> Graph::neighbors( unsigned x) {
 
 
 
-void Graph::delete_edge( unsigned x, unsigned y){
+void Graph::delete_edge( int x, int y){
    // if edge exists, decrement num_edges
    if( get_edge_value(x,y) > 0 ){
       num_edges--;
@@ -86,11 +121,11 @@ void Graph::delete_edge( unsigned x, unsigned y){
 
 }
 
-inline double Graph::get_edge_value( unsigned x, unsigned y) const{
+inline double Graph::get_edge_value( int x, int y) const{
    return matrix[x][y];
 }
 
-void Graph::set_edge_value( unsigned x, unsigned y, double v){
+void Graph::set_edge_value( int x, int y, double v){
    // increment num_edges if new edge is added
    if( get_edge_value(x,y) == 0){
       num_edges++;
@@ -104,8 +139,8 @@ ostream &operator<<(ostream& stream, const Graph &graph){
    stream.precision(1);
 
 
-   for( unsigned i = 0; i < graph.V(); i++){
-      for( unsigned j = 0; j < graph.V(); j++){
+   for( int i = 0; i < graph.V(); i++){
+      for( int j = 0; j < graph.V(); j++){
          stream << fixed << graph.get_edge_value(i,j) << " ";
       }
       stream << endl;

@@ -8,8 +8,8 @@ public:
    // constructor
 
    // public member functions
-   vector<unsigned> path(Graph, unsigned, unsigned);
-   double path_size( unsigned, unsigned);
+   vector<int> path(Graph, int, int);
+   double path_size( int, int);
 
 private:
    
