@@ -2,18 +2,12 @@
 //
 
 class Node {
-  
 public:
+   Node(unsigned v, unsigned w) : v(v), w(w) {}
 
-   //constructor
-   Node(unsigned v, unsigned w);
-      
-   // get methods
-   unsigned getVertice() const;
-   unsigned getWeight() const;
-
-private:
-   unsigned vertice;
-   unsigned weight;
-
+   friend bool operator>(const Node &x, const Node &y){
+      return (x.v > y.v);
+   }
+   unsigned v;
+   unsigned w;
 };

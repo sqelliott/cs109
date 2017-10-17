@@ -1,14 +1,16 @@
-OBJ= graph
+EXE=graph
 CC = g++
 CFLAGS=-c -Wall
+SOURCES= Graph.cpp ShortestPath.cpp main.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
 
-all: graph
+all: $(SOURCES) $(EXE)
 
-graph: Graph.o
-	$(CC) Graph.o -o $(OBJ)
+$(EXE): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $@
 
-GraphADT.o: Graph.cpp
-	$(CC) $(CFLAGS) Graph.cpp
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
 
 clean:
 	rm *o graph

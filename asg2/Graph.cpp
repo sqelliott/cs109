@@ -63,7 +63,7 @@ inline bool Graph::adjacent( unsigned x, unsigned y) const{
 }
 
 
-vector<unsigned> Graph::neighbors( unsigned x) const{
+vector<unsigned> Graph::neighbors( unsigned x) {
    vector<unsigned> neighbors;
    for( unsigned i = 0; i < V(); i++){
       if( get_edge_value(x,i) != 0){
@@ -86,7 +86,7 @@ void Graph::delete_edge( unsigned x, unsigned y){
 
 }
 
-double Graph::get_edge_value( unsigned x, unsigned y) const{
+inline double Graph::get_edge_value( unsigned x, unsigned y) const{
    return matrix[x][y];
 }
 
@@ -113,21 +113,3 @@ ostream &operator<<(ostream& stream, const Graph &graph){
    return stream;
 }
 
-
-
-int main(){
-   Graph g = Graph(.5,10);
-   cout << "This is my graph" << endl;
-   cout << g;
-
-   cout << "5's neighbors are: ";
-   vector<unsigned> n = g.neighbors(5);
-   for( unsigned x : n){
-      cout << x << " ";
-   }
-   cout << endl;
-
-   cout << "num edges: " << g.E() << endl;
-
-   return 0;
-}
