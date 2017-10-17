@@ -3,11 +3,18 @@
 
 class Node {
 public:
-   Node(unsigned v, unsigned w) : v(v), w(w) {}
+   Node(int v, int w) : v(v), w(w) {}
 
    friend bool operator>(const Node &x, const Node &y){
-      return (x.v > y.v);
+      return (x.w > y.w);
    }
-   unsigned v;
-   unsigned w;
+   friend bool operator==(const Node &x, const Node &y){
+      return (x.v == y.v);
+   }
+
+   friend ostream &operator<<(ostream &stream, Node &node){
+      stream << "(" << node.v << "," << node.w << ") ";
+   }
+   int v;
+   int w;
 };

@@ -48,7 +48,7 @@ vector<int> ShortestPath::path(Graph g, int src, int end){
          int cost = dist[curr_node.v] + 
                          g.get_edge_value(curr_node.v, j);
          if( cost < dist[j]){
-            //queue.remove( Node(j, dist[j]));
+            queue.remove( Node(j, dist[j]));
             dist[j] = cost;
             prev[j] = curr_node.v;
             queue.push( Node(j, cost));

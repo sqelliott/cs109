@@ -140,6 +140,7 @@ ostream &operator<<(ostream& stream, const Graph &graph){
 
 
    for( int i = 0; i < graph.V(); i++){
+      stream << i << ": ";
       for( int j = 0; j < graph.V(); j++){
          stream << fixed << graph.get_edge_value(i,j) << " ";
       }
