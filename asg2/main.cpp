@@ -8,14 +8,15 @@
 int main(){
 
 
-   Graph g(.7, 5, 1, 10);
+   //Graph g(.7, 5, 1, 10);
+
+
+   Graph g("graph1.txt");
 
    cout << g;
 
-   //Graph g("graph1.txt");
-
    ShortestPath sp;
-   int s = 0, d = 3;
+   int s = 0, d = 4;
    vector<int> path = sp.path(g, s,d);
    
    cout << "The shortest path from "<< s << " to " << d << " is: ";

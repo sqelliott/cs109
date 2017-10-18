@@ -68,7 +68,8 @@ Graph::Graph( string file){
       matrix[i].resize(V());
    }
 
-   int num_input_weights = V() * ( V() +1) /2; 
+   // use for error checking
+   //int num_input_weights = V() * ( V() +1) /2; 
    int w;
 
    for(int i = 0; i < V(); i++){

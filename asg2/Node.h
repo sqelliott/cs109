@@ -14,6 +14,7 @@ public:
 
    friend ostream &operator<<(ostream &stream, Node &node){
       stream << "(" << node.v << "," << node.w << ") ";
+      return stream;
    }
    int v;
    int w;

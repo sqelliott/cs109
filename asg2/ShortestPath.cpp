@@ -44,7 +44,7 @@ vector<int> ShortestPath::path(Graph g, int src, int end){
       }
 
       vector<int> curr_node_neighbors = g.neighbors(curr_node.v);
-      for( int j = 0; j < curr_node_neighbors.size(); j++){
+      for( int j : curr_node_neighbors){
          int cost = dist[curr_node.v] + 
                          g.get_edge_value(curr_node.v, j);
          if( cost < dist[j]){
