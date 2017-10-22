@@ -6,14 +6,35 @@
 #include <fstream>
 #include <queue>
 #include <ctime>
+#include <stdlib.h>
+#include <math.h>
 using namespace std;
 
+Graph::Graph() : Graph::Graph(50,.1,1,10){}
+Graph::Graph(int num_nodes) : Graph::Graph(num_nodes,.1,1,10) {}
+Graph::Graph(int num_nodes, double density):
+       Graph::Graph(num_nodes,density,1, 10){}
+
+
 // Graph() constructor
-Graph::Graph( double density = .1,
-              int num_nodes = 50, 
+Graph::Graph( int num_nodes = 50,
+              double density = .1,
               double min_cost = 1.0,
-              double max_cost = 10.0){
-   // initialize the number of nodes in the graph
+              double max_cost = 10.0): graph_id(Graph::id++){
+
+   // Validate input
+   if( num_nodes < 1){
+      cerr << "Graph error: Must be at least one node." << endl;
+      exit (EXIT_FAILURE);
+   }
+   if( density > 1 || density < 0){
+      cerr << "Graph error: Invalid edge density" << endl;
+      exit (EXIT_FAILURE);
+   }
+   if( min_cost > max_cost || min_cost <= 0){
+      cerr << "Graph error: Invalid edge weight range" << endl;
+      exit (EXIT_FAILURE);
+   }
    this->num_nodes = num_nodes;
    
    // set matrix to correct size
@@ -23,10 +44,10 @@ Graph::Graph( double density = .1,
    }
 
    // random
-   std::random_device rd;
-   std::default_random_engine generator(rd());
-   std::uniform_real_distribution<double> density_distr( 0.0, 1.0);
-   std::uniform_real_distribution<double> weight_distr( min_cost, max_cost);
+   random_device rd;
+   default_random_engine generator(rd());
+   uniform_real_distribution<double> density_distr( 0.0, 1.0);
+   uniform_real_distribution<double> weight_distr( min_cost, max_cost);
 
    for( int i = 0; i < V(); i++){    
       for( int j = 0; j < V(); j++){
@@ -46,7 +67,7 @@ Graph::Graph( double density = .1,
    }
 }
 
-Graph::Graph( string file){
+Graph::Graph(string file):graph_id(Graph::id++){
    ifstream input;
    input.open(file, ifstream::in);
 
@@ -99,7 +120,7 @@ inline bool Graph::adjacent( int x, int y) const{
 }
 
 
-vector<int> Graph::neighbors( int x) {
+vector<int> Graph::neighbors( int x) const{
    vector<int> neighbors;
    for( int i = 0; i < V(); i++){
       if( get_edge_value(x,i) != 0){
@@ -136,17 +157,40 @@ void Graph::set_edge_value( int x, int y, double v){
    matrix[y][x] = v;
 }
 
+int Graph::get_id() const{
+   return graph_id;
+}
+
+string Graph::graph_path_id(int src, int end) const{
+   string g_str = to_string(get_id());
+   string src_str = to_string(src);
+   string end_str = to_string(end);
+
+   string graph_key = g_str + src_str + end_str;
+   return graph_key;
+}
+
 ostream &operator<<(ostream& stream, const Graph &graph){
    stream.precision(1);
 
-
+   stream << "Graph " << graph.get_id() << endl;
+   int pad_space = ceil( log10( graph.V()) );
    for( int i = 0; i < graph.V(); i++){
+      vector<int> neighbors = graph.neighbors(i);
+      int pad;
+      if( i == 0){  pad = 1;}
+      else{  pad = ceil( log10( i + 1));}
+      for( ; pad < pad_space; pad++){
+         stream << " ";
+      }
       stream << i << ": ";
-      for( int j = 0; j < graph.V(); j++){
-         stream << fixed << graph.get_edge_value(i,j) << " ";
+      for( int j : neighbors){
+         stream << fixed << "(" << j << "," 
+                << graph.get_edge_value(i,j) << ") ";
       }
       stream << endl;
    }
    return stream;
 }
 
+int Graph::id;

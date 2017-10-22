@@ -8,22 +8,24 @@
 int main(){
 
 
-   //Graph g(.7, 5, 1, 10);
 
+   Graph g2(6);
 
-   Graph g("graph1.txt");
+   Graph g1("graph1.txt");
 
-   cout << g;
+   cout << g2;
+   cout << g1;
 
    ShortestPath sp;
    int s = 0, d = 4;
-   vector<int> path = sp.path(g, s,d);
+   //vector<int> path = sp.path(g1, s,d);
    
-   cout << "The shortest path from "<< s << " to " << d << " is: ";
-   for( int x : path ){
-      cout << x << " ";
-   }
+   //cout << "The shortest path from "<< s << " to " << d << " is: ";
+   //for( int x : path ){
+   //   cout << x << " ";
+   //}
    cout << endl;
+   cout << "the cost is: " << sp.path_cost(g1,s,d) << endl;
    
    return 0;
 }

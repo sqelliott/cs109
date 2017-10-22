@@ -8,10 +8,10 @@
 #include <limits>
 #include <algorithm>
 #include "Node.h"
+#include <string>
 
 
-
-vector<int> ShortestPath::path(Graph g, int src, int end){
+vector<int> ShortestPath::path(const Graph& g, int src, int end){
    
    vector<int> dist( g.V() );   
    vector<int> prev( g.V(), -1);
@@ -32,6 +32,7 @@ vector<int> ShortestPath::path(Graph g, int src, int end){
       queue.pop();
 
       if( curr_node.v == end){
+         set_path_cost(g,src,end,dist[end]);
          path.push_back(end);
          int node = end;
          while( prev[node] != src){
@@ -58,7 +59,25 @@ vector<int> ShortestPath::path(Graph g, int src, int end){
    return path;
 }
 
-/*
-double ShortestPath::path_size( int u, int w){
 
-}*/
+double ShortestPath::path_cost(const Graph& g,int u,int w){
+   string key = g.graph_path_id(u,w);
+   if( cost_map.find(key) == cost_map.end() ){
+      path(g,u,w);
+   }
+   return cost_map[key];
+}
+
+
+void ShortestPath::set_path_cost(const Graph& g, int src, int end, double cost){
+   string g_id = std::to_string( g.get_id() );
+   string src_str = std::to_string( src);
+   string end_str = std::to_string( end);
+
+   string key = g_id + src_str + end_str;
+
+   cost_map[key]= cost;
+}
+
+
+
