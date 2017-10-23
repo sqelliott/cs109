@@ -1,3 +1,6 @@
+// main.cpp
+// sean elliott
+// cs109 asg2
 #include <iostream>
 #include "Graph.h"
 #include "Node.h"

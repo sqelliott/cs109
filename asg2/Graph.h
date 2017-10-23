@@ -1,6 +1,8 @@
 // Graph.h
-//
 // Header file for GraphADT
+//
+// Sean Elliott
+// cs109 asg2
 #include <vector>
 #include <iostream>
 #include <string>
