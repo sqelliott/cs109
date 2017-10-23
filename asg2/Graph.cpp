@@ -102,6 +102,8 @@ Graph::Graph(string file):graph_id(Graph::id++){
    
 }
 
+
+
 //////////////////////
 // Member Functions //
 //////////////////////

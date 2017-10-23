@@ -14,7 +14,7 @@
 // nodes in a graph
 vector<int> ShortestPath::path(const Graph& g, int src, int end){
    
-   vector<int> dist( g.V() ); // cost to each node from src
+   vector<double> dist( g.V() ); // cost to each node from src
    vector<int> prev( g.V(), -1); // parents of nodes in path. -1 for no parent
    MyQueue<Node> queue; // Queue of nodes
    vector<int> path;
@@ -23,7 +23,7 @@ vector<int> ShortestPath::path(const Graph& g, int src, int end){
    // (within the constraints of ints.
    for( int i = 0; i < g.V(); i++){
       if( i != src){
-         dist[i] = numeric_limits<int>::max();
+         dist[i] = numeric_limits<double>::max();
       }
    }
 
@@ -55,7 +55,7 @@ vector<int> ShortestPath::path(const Graph& g, int src, int end){
       // on queue.
       vector<int> curr_node_neighbors = g.neighbors(curr_node.v);
       for( int j : curr_node_neighbors){
-         int cost = dist[curr_node.v] + 
+         double cost = dist[curr_node.v] + 
                          g.get_edge_value(curr_node.v, j);
          if( cost < dist[j]){
             queue.remove( Node(j, dist[j]));

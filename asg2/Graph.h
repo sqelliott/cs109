@@ -27,9 +27,6 @@ public:
          double min_cost, double max_cost);
    Graph(string);
 
-   // deconstructor
-
-
    //////////////////////////////
    //  Public Member functions //
    //////////////////////////////
