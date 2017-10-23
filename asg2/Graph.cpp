@@ -158,4 +158,29 @@ string Graph::graph_path_id(int src, int end) const{
 }
 
 
+ostream &operator<<(ostream& stream, const Graph &graph){
+   stream.precision(1);
+
+   stream << "Graph " << graph.get_id() << endl;
+   int pad_space = ceil( log10( graph.V()));
+   for(int i = 0; i < graph.V(); ++i){
+      vector<int> neighbors = graph.neighbors(i);
+      int pad;
+      if( i ==0) pad =1;
+      else{
+         pad = ceil( log10(i+1));
+      }
+      for( ; pad < pad_space; ++pad){
+         stream << " ";
+      }
+      stream << i << ": ";
+      for( int j: neighbors){
+         stream << fixed << "(" << j << ","
+                << graph.get_edge_value(i,j) << ") ";
+      }
+      stream << endl;
+   }
+   return stream;
+}
+
 int Graph::id;
