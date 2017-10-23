@@ -19,7 +19,7 @@ void printPath(ostream& stream, const Graph& g, const vector<int>& path, int src
 
 void avg_cost(const Graph& g,ostream& stream){ 
    stream.precision(1);
-   int num_paths;
+   int num_paths=0;
    double total_cost;
    double cost;
    vector<int> path;
@@ -36,6 +36,7 @@ void avg_cost(const Graph& g,ostream& stream){
          num_paths++;
       }   
    }   
+   cout << total_cost << " " << num_paths << endl;
    stream << "The average path cost is: " << total_cost / num_paths << endl;
 }
 
