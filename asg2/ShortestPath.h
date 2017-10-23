@@ -1,5 +1,8 @@
 // ShortestPath.h
 //
+// Implements Dijkstras algorithm to find least cost
+// paths between nodes in graphs.
+// Maintains the costs of searched paths using unordered_map
 #include <string>
 #include <unordered_map>
 #include "Graph.h"

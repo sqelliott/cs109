@@ -10,14 +10,17 @@
 #include "Node.h"
 #include <string>
 
-
+// Dijkstras algorithm to find the least cost path between
+// nodes in a graph
 vector<int> ShortestPath::path(const Graph& g, int src, int end){
    
-   vector<int> dist( g.V() );   
-   vector<int> prev( g.V(), -1);
-   MyQueue<Node> queue;
+   vector<int> dist( g.V() ); // cost to each node from src
+   vector<int> prev( g.V(), -1); // parents of nodes in path. -1 for no parent
+   MyQueue<Node> queue; // Queue of nodes
    vector<int> path;
 
+   // Set to cost to each node (not src) to highest possible value
+   // (within the constraints of ints.
    for( int i = 0; i < g.V(); i++){
       if( i != src){
          dist[i] = numeric_limits<int>::max();
@@ -31,8 +34,9 @@ vector<int> ShortestPath::path(const Graph& g, int src, int end){
       Node curr_node = queue.top();
       queue.pop();
 
+      // Reached the end
       if( curr_node.v == end){
-         set_path_cost(g,src,end,dist[end]);
+         set_path_cost(g,src,end,dist[end]); // store the cost
          path.push_back(end);
          int node = end;
          while( prev[node] != src){
@@ -44,6 +48,11 @@ vector<int> ShortestPath::path(const Graph& g, int src, int end){
          return path;
       }
 
+      // Get neighbors of current node. For each neighbor, calc cost to 
+      // this neighbor give cost to curr_node + weight of edge between
+      // them. On discovery of lower cost path, remove neighbor from queue 
+      // (if there), update cost, parent, and push neighbor with new cost
+      // on queue.
       vector<int> curr_node_neighbors = g.neighbors(curr_node.v);
       for( int j : curr_node_neighbors){
          int cost = dist[curr_node.v] + 
@@ -59,7 +68,8 @@ vector<int> ShortestPath::path(const Graph& g, int src, int end){
    return path;
 }
 
-
+// Returns minimum cost between nodes of graph.
+// Calls path() if value is not yet known.
 double ShortestPath::path_cost(const Graph& g,int u,int w){
    string key = g.graph_path_id(u,w);
    if( cost_map.find(key) == cost_map.end() ){
@@ -68,7 +78,7 @@ double ShortestPath::path_cost(const Graph& g,int u,int w){
    return cost_map[key];
 }
 
-
+// Stores a path cost of a graph
 void ShortestPath::set_path_cost(const Graph& g, int src, int end, double cost){
    string g_id = std::to_string( g.get_id() );
    string src_str = std::to_string( src);
@@ -78,6 +88,3 @@ void ShortestPath::set_path_cost(const Graph& g, int src, int end, double cost){
 
    cost_map[key]= cost;
 }
-
-
-

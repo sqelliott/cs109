@@ -1,6 +1,8 @@
 // Graph.cpp
 
 #include "Graph.h"
+#include "ShortestPath.h"
+
 #include <random>
 #include <iostream>
 #include <fstream>
@@ -10,8 +12,9 @@
 #include <math.h>
 using namespace std;
 
-Graph::Graph() : Graph::Graph(50,.1,1,10){}
-Graph::Graph(int num_nodes) : Graph::Graph(num_nodes,.1,1,10) {}
+Graph::Graph():Graph::Graph(50,.1,1,10){}
+Graph::Graph(int num_nodes):Graph::Graph(num_nodes,.1,1,10){}
+Graph::Graph(double density):Graph::Graph(50,density,1,10){}
 Graph::Graph(int num_nodes, double density):
        Graph::Graph(num_nodes,density,1, 10){}
 
@@ -23,7 +26,7 @@ Graph::Graph( int num_nodes = 50,
               double max_cost = 10.0): graph_id(Graph::id++){
 
    // Validate input
-   if( num_nodes < 1){
+   if( num_nodes < 1) {
       cerr << "Graph error: Must be at least one node." << endl;
       exit (EXIT_FAILURE);
    }
@@ -48,7 +51,8 @@ Graph::Graph( int num_nodes = 50,
    default_random_engine generator(rd());
    uniform_real_distribution<double> density_distr( 0.0, 1.0);
    uniform_real_distribution<double> weight_distr( min_cost, max_cost);
-
+   // Use random engine to determine if an edge exists
+   // and to determine its weight
    for( int i = 0; i < V(); i++){    
       for( int j = 0; j < V(); j++){
          // no self-loops
@@ -58,9 +62,6 @@ Graph::Graph( int num_nodes = 50,
             if( value < density){
                double weight = weight_distr( generator);
                set_edge_value( i, j, weight);
-            }
-            else{
-               set_edge_value( i, j, 0.0);
             }
          }
       }
@@ -89,8 +90,6 @@ Graph::Graph(string file):graph_id(Graph::id++){
       matrix[i].resize(V());
    }
 
-   // use for error checking
-   //int num_input_weights = V() * ( V() +1) /2; 
    int w;
 
    for(int i = 0; i < V(); i++){
@@ -103,23 +102,13 @@ Graph::Graph(string file):graph_id(Graph::id++){
    
 }
 
+//////////////////////
+// Member Functions //
+//////////////////////
 
-// Member Functions
-inline int Graph::V() const{
-   return num_nodes;
-}
-
-
-inline int Graph::E() const{
-   return num_edges;
-}
-
-
-inline bool Graph::adjacent( int x, int y) const{
-   return (get_edge_value(x,y) != 0);   
-}
-
-
+// Returns the neighbors of a node.
+// This is all nodes in nodes vector with a positive
+// edge weight value.
 vector<int> Graph::neighbors( int x) const{
    vector<int> neighbors;
    for( int i = 0; i < V(); i++){
@@ -131,7 +120,8 @@ vector<int> Graph::neighbors( int x) const{
 }
 
 
-
+// Set the weight between nodes to zero.
+// Decrement number of edges if edge exists
 void Graph::delete_edge( int x, int y){
    // if edge exists, decrement num_edges
    if( get_edge_value(x,y) > 0 ){
@@ -143,22 +133,19 @@ void Graph::delete_edge( int x, int y){
 
 }
 
-inline double Graph::get_edge_value( int x, int y) const{
-   return matrix[x][y];
-}
-
+//
 void Graph::set_edge_value( int x, int y, double v){
    // increment num_edges if new edge is added
+   if( v == 0){
+      cerr << "Graph error: Cannot set an edge to zero\n";
+   exit(EXIT_FAILURE);
+   }
    if( get_edge_value(x,y) == 0){
       num_edges++;
    }
 
    matrix[x][y] = v;
    matrix[y][x] = v;
-}
-
-int Graph::get_id() const{
-   return graph_id;
 }
 
 string Graph::graph_path_id(int src, int end) const{
@@ -170,27 +157,5 @@ string Graph::graph_path_id(int src, int end) const{
    return graph_key;
 }
 
-ostream &operator<<(ostream& stream, const Graph &graph){
-   stream.precision(1);
-
-   stream << "Graph " << graph.get_id() << endl;
-   int pad_space = ceil( log10( graph.V()) );
-   for( int i = 0; i < graph.V(); i++){
-      vector<int> neighbors = graph.neighbors(i);
-      int pad;
-      if( i == 0){  pad = 1;}
-      else{  pad = ceil( log10( i + 1));}
-      for( ; pad < pad_space; pad++){
-         stream << " ";
-      }
-      stream << i << ": ";
-      for( int j : neighbors){
-         stream << fixed << "(" << j << "," 
-                << graph.get_edge_value(i,j) << ") ";
-      }
-      stream << endl;
-   }
-   return stream;
-}
 
 int Graph::id;

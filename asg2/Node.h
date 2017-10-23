@@ -1,5 +1,6 @@
 // Node.h
 //
+// Struct to the cost to a node on a path.
 
 class Node {
 public:

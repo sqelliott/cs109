@@ -1,6 +1,8 @@
 // Priority.h
 //
-//
+// MyQueue template. Inherits from priority_queue.
+// Adds removal functionality to queuery the queue 
+//  and remove values
 #include <functional>
 #include <queue>
 #include <algorithm>
