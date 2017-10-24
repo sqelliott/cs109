@@ -1,0 +1,42 @@
+Two random graphs with 10 nodes
+Graph 0
+0: (6,9.7) 
+1: (7,4.1) 
+2: 
+3: (8,5.3) 
+4: 
+5: 
+6: (0,9.7) (7,3.5) 
+7: (1,4.1) (6,3.5) 
+8: (3,5.3) (9,5.3) 
+9: (8,5.3) 
+Graph 1
+0: (7,2.5) (9,4.9) 
+1: (2,4.9) 
+2: (1,4.9) (4,1.7) (8,3.1) 
+3: (6,6.5) 
+4: (2,1.7) (5,5.9) 
+5: (4,5.9) 
+6: (3,6.5) 
+7: (0,2.5) 
+8: (2,3.1) 
+9: (0,4.9) 
+The shortest path from 0 to 1 in graph 1 is: [ ] 
+with cost: 0.0
+The shortest path from 0 to 2 in graph 1 is: [ ] 
+with cost: 0.0
+The shortest path from 0 to 3 in graph 1 is: [ ] 
+with cost: 0.0
+The shortest path from 0 to 4 in graph 1 is: [ ] 
+with cost: 0.0
+The shortest path from 0 to 5 in graph 1 is: [ ] 
+with cost: 0.0
+The shortest path from 0 to 6 in graph 1 is: [ ] 
+with cost: 0.0
+The shortest path from 0 to 7 in graph 1 is: [ 0 7 ] 
+with cost: 2.5
+The shortest path from 0 to 8 in graph 1 is: [ ] 
+with cost: 0.0
+The shortest path from 0 to 9 in graph 1 is: [ 0 9 ] 
+with cost: 4.9
+The average path cost is: 3.7
