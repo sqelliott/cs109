@@ -1,5 +1,7 @@
 // ShortestPath.cpp
 //
+// Sean Elliott
+// cs109 asg2
 
 #include "ShortestPath.h"
 #include "Graph.h"

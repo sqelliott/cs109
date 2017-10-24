@@ -148,3 +148,4 @@ with cost: 4.9
 The shortest path from 0 to 49 in graph 2 is: [ 0 16 18 49 ] 
 with cost: 4.2
 The average path cost is: 5.3
+

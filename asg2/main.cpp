@@ -1,3 +1,6 @@
+// main.cpp
+// sean elliott
+// cs109 asg2
 #include <iostream>
 #include "Graph.h"
 #include "Node.h"
@@ -36,7 +39,6 @@ void avg_cost(const Graph& g,ostream& stream){
          num_paths++;
       }   
    }   
-   cout << total_cost << " " << num_paths << endl;
    stream << "The average path cost is: " << total_cost / num_paths << endl;
 }
 
@@ -55,12 +57,14 @@ int main(){
 
    ofs.open("Graph_20\%", std::ofstream::out);
    Graph g3(.2);
+   ofs << "Random graph with 20\% density\n";
    ofs << g3;
    avg_cost(g3,ofs);
    ofs.close();
 
    ofs.open("Graph_40\%", std::ofstream::out);
    Graph g4(.4);
+   ofs << "Random graph with 40\% desnity\n";
    ofs << g4;
    avg_cost(g4,ofs);
    ofs.close();

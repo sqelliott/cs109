@@ -3,6 +3,10 @@
 // MyQueue template. Inherits from priority_queue.
 // Adds removal functionality to queuery the queue 
 //  and remove values
+//
+// Sean Elliott
+// cs109 asg2
+
 #include <functional>
 #include <queue>
 #include <algorithm>

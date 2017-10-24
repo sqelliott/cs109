@@ -148,3 +148,4 @@ with cost: 1.2
 The shortest path from 0 to 49 in graph 3 is: [ 0 48 34 49 ] 
 with cost: 3.9
 The average path cost is: 3.0
+

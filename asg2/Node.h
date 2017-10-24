@@ -1,6 +1,9 @@
 // Node.h
 //
 // Struct to the cost to a node on a path.
+// 
+// Sean Elliott
+// cs109 asg2
 
 class Node {
 public:
