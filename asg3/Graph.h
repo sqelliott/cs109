@@ -21,12 +21,21 @@ class Graph {
 public:
 
    // constructors
+
+   // Default constructor.
+   // 50 nodes. 10% density. [1.0,10.0] weight range
    Graph();
+   // Create a graph with specified number of nodes
+   // Node edges
    Graph(int);
+   // Default graph options, with specified density
    Graph(double);
+   // Default graph with specified num_nodes and density
    Graph(int, double);
    Graph(int num_nodes, double density,  
          double min_cost, double max_cost);
+
+   // Create a graph from a file
    Graph(string);
 
    //////////////////////////////
@@ -51,6 +60,7 @@ public:
    inline int get_id() const{
       return graph_id;
    }
+   Graph MST() const;
    string graph_path_id(int,int) const;
    friend ostream &operator<<(ostream &stream, const Graph &);
 
@@ -61,6 +71,14 @@ private:
    int num_nodes;
    int num_edges;   
    int graph_id;
+
+   inline void set_num_nodes(int num_nodes){
+      this->num_nodes = num_nodes;
+      matrix.resize(V());
+      for(int i = 0; i < V(); ++i){
+         matrix[i].resize(V());
+      }
+   }
 
 protected:
    static int id;

@@ -7,16 +7,24 @@
 #include "ShortestPath.h"
 
 #include <random>
+#include <limits>
 #include <iostream>
 #include <fstream>
 #include <queue>
 #include <ctime>
 #include <stdlib.h>
 #include <math.h>
+#include <unordered_set>
 using namespace std;
 
 Graph::Graph():Graph::Graph(50,.1,1,10){}
-Graph::Graph(int num_nodes):Graph::Graph(num_nodes,.1,1,10){}
+Graph::Graph(int num_nodes){
+   if( num_nodes < 1){
+      cerr << "Graph error: Must be at least one node." << endl;
+      exit (EXIT_FAILURE);
+   }
+   set_num_nodes(num_nodes);
+}
 Graph::Graph(double density):Graph::Graph(50,density,1,10){}
 Graph::Graph(int num_nodes, double density):
        Graph::Graph(num_nodes,density,1, 10){}
@@ -41,13 +49,8 @@ Graph::Graph( int num_nodes = 50,
       cerr << "Graph error: Invalid edge weight range" << endl;
       exit (EXIT_FAILURE);
    }
-   this->num_nodes = num_nodes;
+   set_num_nodes(num_nodes);
    
-   // set matrix to correct size
-   matrix.resize( V() );
-   for( int i = 0; i < V(); i++){
-      matrix[i].resize( V() );
-   }
 
    // random
    random_device rd;
@@ -81,18 +84,12 @@ Graph::Graph(string file):graph_id(Graph::id++){
    }
 
    if(input >> num_nodes){
-      this->num_nodes = num_nodes;
+      set_num_nodes(num_nodes);
    }
    else{
       cerr << "Incorrect input format";
       exit(1);
    }
-
-   matrix.resize(V());
-   for( int i = 0; i < V(); i++){
-      matrix[i].resize(V());
-   }
-
    int w;
 
    for(int i = 0; i < V(); i++){
@@ -141,17 +138,33 @@ void Graph::delete_edge( int x, int y){
 //
 void Graph::set_edge_value( int x, int y, double v){
    // increment num_edges if new edge is added
-   if( v == 0){
-      cerr << "Graph error: Cannot set an edge to zero\n";
-   exit(EXIT_FAILURE);
-   }
-   if( get_edge_value(x,y) == 0){
+   if( get_edge_value(x,y) == 0 && v !=0){
       num_edges++;
    }
 
    matrix[x][y] = v;
    matrix[y][x] = v;
 }
+
+Graph Graph::MST() const{
+   Graph tree (V());
+   unordered_set<int> nodes; // Nodes not in tree
+   for(int i=0; i <V(); ++i) nodes.insert(i);
+   // Smallest edge weight for each vertex
+   vector<double> costs (V(),numeric_limit<double>::max());
+   vector<int> edges(V(),-1);
+
+   random_device rd;
+   default_random_engine generator(rd());
+   uniform_real_distribution<int> node;
+
+   while( !nodes.empty()){
+      
+   }
+
+
+}
+
 
 string Graph::graph_path_id(int src, int end) const{
    string g_str = to_string(get_id());
@@ -188,4 +201,7 @@ ostream &operator<<(ostream& stream, const Graph &graph){
    return stream;
 }
 
+// Private Members
 int Graph::id;
+
+
