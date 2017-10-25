@@ -12,6 +12,7 @@
 #include <algorithm>
 using namespace std;
 
+#pragma once
 template<typename T,
          typename Sequence = vector<T>,
          typename Compare = greater<typename Sequence::value_type> >

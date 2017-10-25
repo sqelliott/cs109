@@ -5,6 +5,7 @@
 
 #include "Graph.h"
 #include "ShortestPath.h"
+#include "Priority.h"
 
 #include <random>
 #include <limits>
@@ -16,9 +17,10 @@
 #include <math.h>
 #include <unordered_set>
 using namespace std;
+typedef pair<double,pair<int,int>> Edge;
 
 Graph::Graph():Graph::Graph(50,.1,1,10){}
-Graph::Graph(int num_nodes){
+Graph::Graph(int num_nodes):graph_id(Graph::id++){
    if( num_nodes < 1){
       cerr << "Graph error: Must be at least one node." << endl;
       exit (EXIT_FAILURE);
@@ -31,10 +33,8 @@ Graph::Graph(int num_nodes, double density):
 
 
 // Graph() constructor
-Graph::Graph( int num_nodes = 50,
-              double density = .1,
-              double min_cost = 1.0,
-              double max_cost = 10.0): graph_id(Graph::id++){
+Graph::Graph( int num_nodes, double density, double min_cost,
+              double max_cost): graph_id(Graph::id++){
 
    // Validate input
    if( num_nodes < 1) {
@@ -146,23 +146,31 @@ void Graph::set_edge_value( int x, int y, double v){
    matrix[y][x] = v;
 }
 
-Graph Graph::MST() const{
-   Graph tree (V());
+Graph Graph::MST() {
+   Graph tree(V());
    unordered_set<int> nodes; // Nodes not in tree
-   for(int i=0; i <V(); ++i) nodes.insert(i);
-   // Smallest edge weight for each vertex
-   vector<double> costs (V(),numeric_limit<double>::max());
-   vector<int> edges(V(),-1);
+   MyQueue<Edge> connections;  
 
-   random_device rd;
-   default_random_engine generator(rd());
-   uniform_real_distribution<int> node;
-
-   while( !nodes.empty()){
-      
+   for(int i=0; i <V(); ++i){
+      nodes.insert(i);
    }
 
+   int v = rand_node();
+   fill_MST_connections(nodes,connections,v);
+   vector<int> neigh = neighbors(v);
+   for( int i: neigh){
+      double cost = get_edge_value(v,i);
+      connections.push( make_pair(cost,make_pair(v,i)));
+   }
 
+   Edge e = next_prim_edge(nodes,connections);
+   tree.set_edge_value(e.second.first,e.second.second,e.first);
+
+   while( !nodes.empty()){
+      e = next_prim_edge(nodes,connections);
+   }
+
+   return tree;
 }
 
 
@@ -204,4 +212,31 @@ ostream &operator<<(ostream& stream, const Graph &graph){
 // Private Members
 int Graph::id;
 
+void Graph::set_num_nodes(int num_nodes){
+   this->num_nodes = num_nodes;
+   matrix.resize(V());
+   for(int i = 0; i < V(); ++i)
+      matrix[i].resize(V());
+}
 
+int Graph::rand_node() const{
+   random_device rd;
+   default_random_engine generator(rd());
+   uniform_int_distribution<int> node(0,V()-1);
+   return node(generator);
+}
+
+Edge Graph::next_prim_edge(unordered_set<int>& nodes, MyQueue<Edge>& connections){
+   Edge e = connections.top();
+   connections.pop();
+   while(!(nodes.find(e.second.first) == nodes.end() ||
+           nodes.find(e.second.first) == nodes.end())){
+      e = connections.top();
+      connections.pop();
+   }
+   if( nodes.find(e.second.first) != nodes.end()){
+      
+   }
+   nodes.erase(e.second.second);
+   return e;
+} 

@@ -9,8 +9,8 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
-#include "Node.h"
 #include <string>
+typedef std::pair<double,int> Node;
 
 // Dijkstras algorithm to find the least cost path between
 // nodes in a graph
@@ -29,7 +29,7 @@ vector<int> ShortestPath::path(const Graph& g, int src, int end){
       }
    }
 
-   queue.push( Node( src, dist[src] ));
+   queue.push( std::make_pair( dist[src],src ));
 
    while( !queue.empty() ){
       
@@ -37,7 +37,7 @@ vector<int> ShortestPath::path(const Graph& g, int src, int end){
       queue.pop();
 
       // Reached the end
-      if( curr_node.v == end){
+      if( curr_node.second == end){
          set_path_cost(g,src,end,dist[end]); // store the cost
          path.push_back(end);
          int node = end;
@@ -55,15 +55,15 @@ vector<int> ShortestPath::path(const Graph& g, int src, int end){
       // them. On discovery of lower cost path, remove neighbor from queue 
       // (if there), update cost, parent, and push neighbor with new cost
       // on queue.
-      vector<int> curr_node_neighbors = g.neighbors(curr_node.v);
+      vector<int> curr_node_neighbors = g.neighbors(curr_node.second);
       for( int j : curr_node_neighbors){
-         double cost = dist[curr_node.v] + 
-                         g.get_edge_value(curr_node.v, j);
+         double cost = dist[curr_node.second] + 
+                         g.get_edge_value(curr_node.second, j);
          if( cost < dist[j]){
-            queue.remove( Node(j, dist[j]));
+            queue.remove( std::make_pair(j, dist[j]));
             dist[j] = cost;
-            prev[j] = curr_node.v;
-            queue.push( Node(j, cost));
+            prev[j] = curr_node.second;
+            queue.push( std::make_pair(cost,j));
          }
       }
    }

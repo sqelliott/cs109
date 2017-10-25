@@ -3,7 +3,6 @@
 // cs109 asg2
 #include <iostream>
 #include "Graph.h"
-#include "Node.h"
 #include "Priority.h"
 #include "ShortestPath.h"
 #include <vector>
@@ -45,6 +44,11 @@ void avg_cost(const Graph& g,ostream& stream){
 
 int main(){
 
+   Graph* g = new Graph("graph1.txt");
+   cout << *g;
+   
+   avg_cost(*g,cout);
+   /*
    std::ofstream ofs;
    ofs.open("RandomGraphs.txt", std::ofstream::out);
    Graph g1(10);
@@ -67,7 +71,7 @@ int main(){
    ofs << "Random graph with 40\% desnity\n";
    ofs << g4;
    avg_cost(g4,ofs);
-   ofs.close();
+   ofs.close();*/
    
    return 0;
 }

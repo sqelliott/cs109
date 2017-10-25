@@ -4,7 +4,7 @@ sqelliot
 asg2
 CS 109
 
-Files: Graph.{cpp,h} ShortestPath.{cpp,h} Priority.h Node.h main.cpp
+Files: Graph.{cpp,h} ShortestPath.{cpp,h} Priority.h main.cpp
 
 main.cpp:
 	File creates two random graphs with 10 nodes each, and prints their representation and other informatoin
