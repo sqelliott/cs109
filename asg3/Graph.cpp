@@ -87,16 +87,20 @@ Graph::Graph(string file):graph_id(Graph::id++){
       set_num_nodes(num_nodes);
    }
    else{
-      cerr << "Incorrect input format";
+      cerr << "Incorrect input format\n";
       exit(1);
    }
    int w;
 
    for(int i = 0; i < V(); i++){
       for( int j = 0; j < V(); j++){
-         input >> w;
-
-         set_edge_value(i,j,w);
+         if(input >> w){
+            set_edge_value(i,j,w);
+         }
+         else{
+            cerr << "Incorrect input format\n";
+            exit(1);
+         }
       }
    }
    
@@ -146,33 +150,6 @@ void Graph::set_edge_value( int x, int y, double v){
    matrix[y][x] = v;
 }
 
-Graph Graph::MST() {
-   Graph tree(V());
-   unordered_set<int> nodes; // Nodes not in tree
-   MyQueue<Edge> connections;  
-
-   for(int i=0; i <V(); ++i){
-      nodes.insert(i);
-   }
-
-   int v = rand_node();
-   fill_MST_connections(nodes,connections,v);
-   vector<int> neigh = neighbors(v);
-   for( int i: neigh){
-      double cost = get_edge_value(v,i);
-      connections.push( make_pair(cost,make_pair(v,i)));
-   }
-
-   Edge e = next_prim_edge(nodes,connections);
-   tree.set_edge_value(e.second.first,e.second.second,e.first);
-
-   while( !nodes.empty()){
-      e = next_prim_edge(nodes,connections);
-   }
-
-   return tree;
-}
-
 
 string Graph::graph_path_id(int src, int end) const{
    string g_str = to_string(get_id());
@@ -219,24 +196,4 @@ void Graph::set_num_nodes(int num_nodes){
       matrix[i].resize(V());
 }
 
-int Graph::rand_node() const{
-   random_device rd;
-   default_random_engine generator(rd());
-   uniform_int_distribution<int> node(0,V()-1);
-   return node(generator);
-}
-
-Edge Graph::next_prim_edge(unordered_set<int>& nodes, MyQueue<Edge>& connections){
-   Edge e = connections.top();
-   connections.pop();
-   while(!(nodes.find(e.second.first) == nodes.end() ||
-           nodes.find(e.second.first) == nodes.end())){
-      e = connections.top();
-      connections.pop();
-   }
-   if( nodes.find(e.second.first) != nodes.end()){
-      
-   }
-   nodes.erase(e.second.second);
-   return e;
-} 
+ 

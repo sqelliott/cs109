@@ -9,7 +9,6 @@
 #include <unordered_set>
 #include "Priority.h"
 using namespace std;
-typedef pair<double,pair<int,int>> Edge;
 
 #pragma once
 // ADT representation for vertices and edges in a graph
@@ -63,7 +62,6 @@ public:
    inline int get_id() const{
       return graph_id;
    }
-   Graph MST();
    string graph_path_id(int,int) const;
    friend ostream &operator<<(ostream &stream, const Graph &);
 
@@ -74,11 +72,8 @@ private:
    int num_nodes;
    int num_edges;   
    int graph_id;
-   Edge next_prim_edge(unordered_set<int>&,MyQueue<Edge>&);
-   void fill_MST_connections(unordered_set
    
    void set_num_nodes(int num_nodes);
-   int rand_node() const;
 
 protected:
    static int id;
