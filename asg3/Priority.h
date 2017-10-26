@@ -24,4 +24,10 @@ public:
          this->c.erase(it);
       }
    }
+
+   void clear(){
+      while( this->c.size() > 0){
+        this->c.erase( this->c.begin() );
+      }
+   }
 };

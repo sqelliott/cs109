@@ -1,7 +1,7 @@
 EXE=graph
 CC = g++ -std=c++11
 CFLAGS=-c -Wall
-SOURCES= Graph.cpp ShortestPath.cpp main.cpp
+SOURCES= Graph.cpp ShortestPath.cpp main.cpp MST.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 
 all: $(SOURCES) $(EXE)
