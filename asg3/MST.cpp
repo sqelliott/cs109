@@ -19,6 +19,7 @@ Graph MinimumSpanningTree::MST(const Graph& g) {
 
    while( !nodes.empty() ){
       Edge e = next_prim_edge();
+      fill_MST_connections(g,e.second.second);
       double cost = e.first;
       int n1 = e.second.first;
       int n2 = e.second.second;

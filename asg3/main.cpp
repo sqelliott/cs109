@@ -5,6 +5,7 @@
 #include "Graph.h"
 #include "Priority.h"
 #include "ShortestPath.h"
+#include "MST.h"
 #include <vector>
 #include <fstream>
 
@@ -44,34 +45,13 @@ void avg_cost(const Graph& g,ostream& stream){
 
 int main(){
 
-   Graph* g = new Graph("graph1.txt");
+   Graph* g = new Graph(100,.4,1,10);
    cout << *g;
    
-   avg_cost(*g,cout);
-   /*
-   std::ofstream ofs;
-   ofs.open("RandomGraphs.txt", std::ofstream::out);
-   Graph g1(10);
-   Graph g2(10);
-   ofs << "Two random graphs with 10 nodes" << endl;
-   ofs << g1;
-   ofs << g2;
-   avg_cost(g2,ofs);
-   ofs.close();
-
-   ofs.open("Graph_20\%", std::ofstream::out);
-   Graph g3(.2);
-   ofs << "Random graph with 20\% density\n";
-   ofs << g3;
-   avg_cost(g3,ofs);
-   ofs.close();
-
-   ofs.open("Graph_40\%", std::ofstream::out);
-   Graph g4(.4);
-   ofs << "Random graph with 40\% desnity\n";
-   ofs << g4;
-   avg_cost(g4,ofs);
-   ofs.close();*/
+   MinimumSpanningTree mst;
+   Graph tree = mst.MST(*g);
+   cout << tree;
+   cout << tree.V() << " vertices and " << tree.E() << " edges\n";
    
    return 0;
 }

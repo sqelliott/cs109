@@ -194,6 +194,7 @@ void Graph::set_num_nodes(int num_nodes){
    matrix.resize(V());
    for(int i = 0; i < V(); ++i)
       matrix[i].resize(V());
+   this->num_edges = 0;
 }
 
  
