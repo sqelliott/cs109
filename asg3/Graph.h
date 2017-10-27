@@ -11,6 +11,9 @@
 using namespace std;
 typedef pair<double, pair<int,int>> Edge;
 const int DISJOINT = -1;
+const int TEST_CONN = -1;
+const int CONN = 1;
+const int UNCONN = 0;
 
 #pragma once
 // ADT representation for vertices and edges in a graph
@@ -76,6 +79,9 @@ public:
    Graph MST();
    int get_MST_cost();
 
+   // check graph connectivity
+   bool isConnected();
+
 private:
 
    vector<vector<double>> matrix; // graph container
@@ -83,13 +89,16 @@ private:
    int num_nodes;
    int num_edges;   
    int graph_id;
+   int connected;
    
    void set_num_nodes(int num_nodes);
 
    // MST members
-   int rand_node(int) const;
+   int rand_node() const;
    Edge next_prim_edge();
    void fill_MST_connections(int);
+
+   void dfs(int,vector<int>&);
 
    int mst_cost = -1;
    unordered_set<int> nodes;

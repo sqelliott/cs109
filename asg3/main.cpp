@@ -5,7 +5,6 @@
 #include "Graph.h"
 #include "Priority.h"
 #include "ShortestPath.h"
-#include "MST.h"
 #include <vector>
 #include <fstream>
 
@@ -45,8 +44,9 @@ void avg_cost(const Graph& g,ostream& stream){
 
 int main(){
 
-   Graph* g = new Graph("graph2.txt");
+   Graph* g = new Graph(10);
    cout << *g;
+   cout << "Graph " << g->get_id() << " is connected " << g->isConnected() << endl;
    
    Graph tree = g->MST();
    Graph tree2 = g->MST();

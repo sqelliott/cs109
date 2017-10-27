@@ -9,6 +9,7 @@
 
 #include <random>
 #include <limits>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <queue>
@@ -181,6 +182,10 @@ ostream &operator<<(ostream& stream, const Graph &graph){
 
 // Minimum Spanning Tree
 Graph Graph::MST(){
+   if( !isConnected()){
+      cerr << "Graph error: Connected graphs only\n";
+      exit (EXIT_FAILURE);
+   }
    Graph tree(V());
    nodes.clear();
    connections.clear();
@@ -190,7 +195,7 @@ Graph Graph::MST(){
       nodes.insert(i);
    }
 
-   int v = rand_node(V());
+   int v = rand_node();
    nodes.erase(v);
    fill_MST_connections(v);
 
@@ -213,10 +218,10 @@ int Graph::get_MST_cost(){
    return mst_cost;  
 }
 
-int Graph::rand_node(int n) const{
+int Graph::rand_node() const{
    random_device rd;
    default_random_engine generator(rd());
-   uniform_int_distribution<int> node(0,n-1);
+   uniform_int_distribution<int> node(0,V()-1);
    return node(generator);
 }
 
@@ -249,6 +254,31 @@ void Graph::set_num_nodes(int num_nodes){
    for(int i = 0; i < V(); ++i)
       matrix[i].resize(V(),DISJOINT);
    this->num_edges = 0;
+   this->connected = TEST_CONN;
 }
 
- 
+bool Graph::isConnected(){
+   int v = rand_node();
+   if( this->connected == -1){
+     // mark discovered nodes
+     vector<int> disc(V());
+     dfs(v, disc);
+
+     if( all_of(disc.begin(), disc.end(), [](int i){return i == 1; }))
+        this->connected =1;
+     else
+        this->connected = 0;
+   }
+
+   if( this->connected == 1) return true;
+   return false;
+}
+
+void Graph::dfs(int v, vector<int>& disc){
+   disc[v] = 1;
+   for( int i : neighbors(v)){
+      if( disc[i] != 1){
+         dfs(i,disc);
+      }
+   }
+} 
