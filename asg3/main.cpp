@@ -45,13 +45,14 @@ void avg_cost(const Graph& g,ostream& stream){
 
 int main(){
 
-   Graph* g = new Graph(100,.4,1,10);
+   Graph* g = new Graph("graph2.txt");
    cout << *g;
    
-   MinimumSpanningTree mst;
-   Graph tree = mst.MST(*g);
+   Graph tree = g->MST();
    cout << tree;
    cout << tree.V() << " vertices and " << tree.E() << " edges\n";
+   cout << "Tree cost is: " << tree.get_MST_cost() << endl;
+
    
    return 0;
 }

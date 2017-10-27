@@ -90,20 +90,11 @@ Graph::Graph(string file):graph_id(Graph::id++){
       cerr << "Incorrect input format\n";
       exit(1);
    }
-   int w;
-
-   for(int i = 0; i < V(); i++){
-      for( int j = 0; j < V(); j++){
-         if(input >> w){
-            set_edge_value(i,j,w);
-         }
-         else{
-            cerr << "Incorrect input format\n";
-            exit(1);
-         }
-      }
-   }
    
+   int n1,n2,c;
+   while( input >> n1 >> n2 >> c){
+      set_edge_value(n1,n2,c);
+   }
 }
 
 
@@ -184,6 +175,69 @@ ostream &operator<<(ostream& stream, const Graph &graph){
       stream << endl;
    }
    return stream;
+}
+
+
+
+// Minimum Spanning Tree
+Graph Graph::MST(){
+   Graph tree(V());
+   nodes.clear();
+   connections.clear();
+   mst_cost = 0;
+
+   for(int i = 0; i < V(); ++i){
+      nodes.insert(i);
+   }
+
+   int v = rand_node(V());
+   nodes.erase(v);
+   fill_MST_connections(v);
+
+   while( !nodes.empty()){
+      Edge e = next_prim_edge();
+      fill_MST_connections(e.second.second);
+      double cost = e.first;
+      int n1 = e.second.first;
+      int n2 = e.second.second;
+      tree.set_edge_value(n1,n2,cost);
+      mst_cost += cost;
+   }
+   return tree;
+}
+
+int Graph::get_MST_cost(){
+   if( mst_cost == -1){
+      MST();
+   }
+   return mst_cost;  
+}
+
+int Graph::rand_node(int n) const{
+   random_device rd;
+   default_random_engine generator(rd());
+   uniform_int_distribution<int> node(0,n-1);
+   return node(generator);
+}
+
+Edge Graph::next_prim_edge(){
+   Edge e = connections.top();
+   connections.pop();
+   while(nodes.find(e.second.second) == nodes.end()){
+      e = connections.top();
+      connections.pop();
+   }
+   nodes.erase(e.second.second);
+   return e;
+}
+
+void Graph::fill_MST_connections(int v){
+   for( int i : neighbors(v)){
+      if( nodes.find(i) != nodes.end()){
+         double cost = get_edge_value(v,i);
+         connections.push( make_pair(cost, make_pair(v,i)));
+      }
+   }  
 }
 
 // Private Members
