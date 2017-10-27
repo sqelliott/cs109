@@ -77,7 +77,7 @@ public:
 
    // MST
    Graph MST();
-   int get_MST_cost();
+   double get_MST_cost();
 
    // check graph connectivity
    bool isConnected();
@@ -100,7 +100,7 @@ private:
 
    void dfs(int,vector<int>&);
 
-   int mst_cost = -1;
+   double mst_cost = -1;
    unordered_set<int> nodes;
    MyQueue<Edge> connections;
 

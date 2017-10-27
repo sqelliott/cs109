@@ -46,7 +46,7 @@ Graph::Graph( int num_nodes, double density, double min_cost,
       cerr << "Graph error: Invalid edge density" << endl;
       exit (EXIT_FAILURE);
    }
-   if( min_cost > max_cost || min_cost <= 0){
+   if( min_cost > max_cost || min_cost < 0){
       cerr << "Graph error: Invalid edge weight range" << endl;
       exit (EXIT_FAILURE);
    }
@@ -211,7 +211,7 @@ Graph Graph::MST(){
    return tree;
 }
 
-int Graph::get_MST_cost(){
+double Graph::get_MST_cost(){
    if( mst_cost == -1){
       MST();
    }
