@@ -49,10 +49,12 @@ int main(){
    cout << *g;
    
    Graph tree = g->MST();
+   Graph tree2 = g->MST();
    cout << tree;
    cout << tree.V() << " vertices and " << tree.E() << " edges\n";
    cout << "Tree cost is: " << tree.get_MST_cost() << endl;
 
+   cout << tree2.V() << " " << tree2.E() << " " << tree.get_MST_cost() << endl;
    
    return 0;
 }

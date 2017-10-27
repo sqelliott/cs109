@@ -109,7 +109,7 @@ Graph::Graph(string file):graph_id(Graph::id++){
 vector<int> Graph::neighbors( int x) const{
    vector<int> neighbors;
    for( int i = 0; i < V(); i++){
-      if( get_edge_value(x,i) != 0){
+      if( get_edge_value(x,i) != DISJOINT){
          neighbors.push_back(i);
       }
    }
@@ -121,19 +121,19 @@ vector<int> Graph::neighbors( int x) const{
 // Decrement number of edges if edge exists
 void Graph::delete_edge( int x, int y){
    // if edge exists, decrement num_edges
-   if( get_edge_value(x,y) > 0 ){
+   if( get_edge_value(x,y) >= 0 ){
       num_edges--;
    }
 
-   set_edge_value(x,y,0);
-   set_edge_value(y,x,0);
+   set_edge_value(x,y,DISJOINT);
+   set_edge_value(y,x,DISJOINT);
 
 }
 
 //
 void Graph::set_edge_value( int x, int y, double v){
    // increment num_edges if new edge is added
-   if( get_edge_value(x,y) == 0 && v !=0){
+   if( get_edge_value(x,y) == DISJOINT && v !=DISJOINT){
       num_edges++;
    }
 
@@ -247,7 +247,7 @@ void Graph::set_num_nodes(int num_nodes){
    this->num_nodes = num_nodes;
    matrix.resize(V());
    for(int i = 0; i < V(); ++i)
-      matrix[i].resize(V());
+      matrix[i].resize(V(),DISJOINT);
    this->num_edges = 0;
 }
 

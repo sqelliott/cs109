@@ -10,6 +10,7 @@
 #include "Priority.h"
 using namespace std;
 typedef pair<double, pair<int,int>> Edge;
+const int DISJOINT = -1;
 
 #pragma once
 // ADT representation for vertices and edges in a graph
@@ -53,7 +54,7 @@ public:
       return num_edges;
    }
    inline bool adjacent(int x, int y) const{
-      return (get_edge_value(x,y) != 0);
+      return (get_edge_value(x,y) != DISJOINT);
    }
    vector<int> neighbors( int) const;
    void delete_edge( int, int);
