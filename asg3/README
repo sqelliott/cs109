@@ -1,17 +1,16 @@
 Sean Elliott
 sqelliot
 23 October 2017
-asg2
+asg3
 CS 109
 
 Files: Graph.{cpp,h} ShortestPath.{cpp,h} Priority.h main.cpp
 
 main.cpp:
-	File creates two random graphs with 10 nodes each, and prints their representation and other informatoin
-        about them in "RandomGraphs.txt," to illustrate simple examples of my Graph class's functionality.
-	
-	A graph is then called with 20% edge density, using default number of nodes (50) and edge weight range	
-	[1.0,10.0]. This graph, along with the paths between node 0 to node x ( 1<=x<=49) are printed to 	
-	"Graph_20%". At the	the bottom of the file, the average path cost is printed.
-	
-	Similar functionality occurs for a graph with 40% density.
+	Runs the Prim minimimum spanning tree algorithm on three graphs.
+	First takes my own 10-node graph from 'graph1.txt' to produce graph and
+	produce the corresponding MST.
+	Then produces a random graph wiht 100 nodes, 30% density and produces
+	that graphs corresponding MST.
+	Finally, takes the sample graph from coursera, and does the same.
+	Output of the process I ran saved to 'graph.out'
