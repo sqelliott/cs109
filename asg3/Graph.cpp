@@ -18,7 +18,6 @@
 #include <math.h>
 #include <unordered_set>
 using namespace std;
-typedef pair<double,pair<int,int>> Edge;
 
 Graph::Graph():Graph::Graph(50,.1,1,10){}
 Graph::Graph(int num_nodes):graph_id(Graph::id++){
@@ -109,7 +108,7 @@ Graph::Graph(string file):graph_id(Graph::id++){
 //////////////////////
 
 // Returns the neighbors of a node.
-// This is all nodes in nodes vector with a positive
+// This is all nodes in nodes vector not DISJOINT
 // edge weight value.
 vector<int> Graph::neighbors( int x) const{
   vector<int> neighbors;
@@ -122,7 +121,7 @@ vector<int> Graph::neighbors( int x) const{
 }
 
 
-// Set the weight between nodes to zero.
+// Set the weight between nodes to DISJOINT.
 // Decrement number of edges if edge exists
 void Graph::delete_edge( int x, int y){
   // if edge exists, decrement num_edges
@@ -149,7 +148,7 @@ void Graph::set_edge_value( int x, int y, double v){
 // Used to store cost of lowest cost path between
 // two nodes in a graph in unordered_set
 string Graph::graph_path_id(int src, int end) const{
-  string g_str = to_string(get_id());
+  string g_str   = to_string(get_id());
   string src_str = to_string(src);
   string end_str = to_string(end);
 
