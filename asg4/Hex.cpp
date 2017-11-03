@@ -2,40 +2,37 @@
 
 #include "Hex.h"
 #include <stdexcept>
+#include <algorithm>
 using namespace std;
 
-Hex::Hex(int n = 11){
-  set_size(n);
+Hex::Hex(int n = 11) : size(n){
   board.resize(get_size());
   for(auto it=board.begin(); it!=board.end();++it){
     *it.resize(get_size(),Player::none);
   }
 }
 
-int Hex::move(int row, int col){
+int Hex::make_move(int row, int col){
   int valid = 1;
-  if(!valid_move(row,col)){
+  if(game_over()){
+    valid=-2;
+  }
+  else if(!valid_move(row,col)){
     valid = -1;
   }
   else if(!free_space(row,col)){
-    valid = 0;
+    valid =  0;
   }
   else{
-    board[row][col]= curr_player();
+    add_move(row,col);
   }
   return valid; 
 }
 
 bool Hex::winner(){
   if(!game_over()){
-    if(curr_player() == Player::red){
-      did_red_win();
-    }
-    else{
-      did_blue_win();
-    }
+    did_player_won();
   }
-
   return game_over();;
 }
 
@@ -43,11 +40,7 @@ int Hex::get_size() const{
   return this->size;
 }
 
-void Hex::set_size(int size){
-  this->size = size;
-}
-
-Player Hex::current_player() const{
+Player Hex::curr_player() const{
   return this->player;
 }
 
@@ -56,9 +49,19 @@ Player Hex::current_player() const{
 /////////////////////
 
 bool Hex::game_over() const{
-  return this->winner;
+  return this->_game_over;
 }
 
-bool Hex::did_red_win(){
-  
+bool Hex::did_player_win(){
+  if(on_both_walls()){
+    auto spots = get_walls().first;;
+    Spots visited;
+    for(auto it = spots.cbegin(); it != spots.cend(); ++it){
+      if(visited.find(*it) != visited.end()){
+        visited.insert(*it);
+        
+      }
+    }
+  }
+  return game_over();
 }
