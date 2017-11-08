@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <unordered_set>
-#include "pair_hash.h"
 using namespace std;
 enum class Player{red,blue,none};
 typedef pair<int,int> Spot;
@@ -21,8 +20,10 @@ public:
   int get_size() const;
   Player curr_player() const;
   bool is_game_over() const;
+  Player get_winner() const;
 
   void display_board() const;
+  Spot rand_move() const;
   
 private:
   // state member variables

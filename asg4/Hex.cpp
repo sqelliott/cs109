@@ -2,6 +2,7 @@
 
 #include "Hex.h"
 #include <iostream>
+#include <random>
 #include <stdexcept>
 #include <algorithm>
 using namespace std;
@@ -14,6 +15,8 @@ Hex::Hex(int n) : size(n){
 }
 
 int Hex::make_move(int row, int col){
+  row -= 1;
+  col -= 1;
   int valid = 1;
   if(is_game_over()){
     valid=-2;
@@ -26,6 +29,7 @@ int Hex::make_move(int row, int col){
   }
   else{
     add_move(row,col);
+    check_for_winner();
   }
   return valid; 
 }
@@ -58,13 +62,24 @@ void Hex::display_board() const{
         case Player::blue : cout << "B";
              break;
         default :
-                  cout << "U";
+                  cout << "_";
                   break;
       }
       cout << " ";
     }
     cout << endl;
   } 
+}
+
+Player Hex::get_winner() const{
+  return this->winner;
+}
+
+Spot Hex::rand_move() const{
+  random_device rd;
+  default_random_engine gen(rd());
+  uniform_int_distribution<int> node(1,get_size());
+  return make_pair(node(gen),node(gen)); 
 }
 
 /////////////////////
@@ -134,15 +149,15 @@ bool Hex::did_player_win(){
     }
     while(!edge_queue.empty()){
       Spot curr_spot = edge_queue.front();
+      edge_queue.erase(edge_queue.begin());
       auto it = find(visited.begin(), visited.end(), curr_spot);
-      if(it != visited.end()){
+      if(it == visited.end()){
         
         if(spot_connects_walls(curr_spot)){
           game_is_over();
           return is_game_over();
         }
 
-        edge_queue.erase(edge_queue.begin());
         visited.push_back(curr_spot);
 
         vector<Spot> neigh = get_spots_neigh(curr_spot);
@@ -175,11 +190,13 @@ vector<Spot> Hex::get_spots_neigh(Spot s){
   vector<Spot> neigh;
   for(int drow = -1; drow <2; ++drow){
     for(int dcol = -1; dcol <2; ++dcol){
-      n_row = row+drow;
-      n_col = col+dcol;
-      if( valid_spot(n_row,n_col) && 
-          curr_player() == player_on_spot(n_row,n_col)){
-        neigh.push_back( make_pair(n_row,n_col));
+      if( drow != 0 || dcol != 0){
+        n_row = row+drow;
+        n_col = col+dcol;
+        if( valid_spot(n_row,n_col) && 
+            curr_player() == player_on_spot(n_row,n_col)){
+          neigh.push_back( make_pair(n_row,n_col));
+        }
       }
     }
   }
