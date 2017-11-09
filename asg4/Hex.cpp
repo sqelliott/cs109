@@ -78,9 +78,9 @@ void Hex::display_board() const{
     for(int col = 0; col < get_size(); ++col){
       Player p = player_on_spot(row,col);
       switch(p){
-        case Player::red  : cout << "R";
+        case Player::red  : cout << "X";
              break;
-        case Player::blue : cout << "B";
+        case Player::blue : cout << "O";
              break;
         default :
                   cout << ".";
@@ -89,11 +89,13 @@ void Hex::display_board() const{
       if(col < get_size()-1)cout << " - ";
     }
     cout << endl;
-    for(int pad=0; pad<=i;++pad){cout << " ";}
-    for(int col = 0; col < 2*get_size()-1; ++col){
-      if(col%2==0) cout << "\\";
-      else cout << "/";
-      cout << " ";
+    if(row < get_size()-1){
+      for(int pad=0; pad<=i;++pad){cout << " ";}
+      for(int col = 0; col < 2*get_size()-1; ++col){
+        if(col%2==0) cout << "\\";
+        else cout << "/";
+        cout << " ";
+      }
     }
     cout << endl;
   } 
@@ -218,7 +220,7 @@ vector<Spot> Hex::get_spots_neigh(Spot s){
   vector<Spot> neigh;
   for(int drow = -1; drow <2; ++drow){
     for(int dcol = -1; dcol <2; ++dcol){
-      if( drow != 0 || dcol != 0){
+      if( drow != dcol){
         n_row = row+drow;
         n_col = col+dcol;
         if( valid_spot(n_row,n_col) && 
