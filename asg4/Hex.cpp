@@ -34,6 +34,27 @@ int Hex::make_move(int row, int col){
   return valid; 
 }
 
+
+bool Hex::new_game(){
+  if(is_game_over()){
+    for(int i=0;i<get_size();++i){
+      for(int j=0; j<get_size();++j){
+        this->board[i][j] = Player::none;
+      }
+    }
+    this->player = Player::red;
+    this->winner = Player::none;
+    this->_game_over = false;
+    this->red_walls.first.clear();
+    this->red_walls.second.clear();
+    this->blue_walls.first.clear();
+    this->blue_walls.second.clear();
+    return true;
+  }
+  return false;
+}
+
+
 bool Hex::check_for_winner(){
   if(!is_game_over()){
     did_player_win();
@@ -52,7 +73,7 @@ Player Hex::curr_player() const{
 
 void Hex::display_board() const{
   int i = 0;
-  for( int row = 0; row < get_size(); ++row, ++i){
+  for( int row = 0; row < get_size(); ++row, i+=2){
     for(int pad=0; pad < i; ++pad){cout << " ";}
     for(int col = 0; col < get_size(); ++col){
       Player p = player_on_spot(row,col);
@@ -62,9 +83,16 @@ void Hex::display_board() const{
         case Player::blue : cout << "B";
              break;
         default :
-                  cout << "_";
+                  cout << ".";
                   break;
       }
+      if(col < get_size()-1)cout << " - ";
+    }
+    cout << endl;
+    for(int pad=0; pad<=i;++pad){cout << " ";}
+    for(int col = 0; col < 2*get_size()-1; ++col){
+      if(col%2==0) cout << "\\";
+      else cout << "/";
       cout << " ";
     }
     cout << endl;

@@ -3,27 +3,44 @@
 #include <vector>
 #include <unordered_set>
 using namespace std;
+
+
+
 enum class Player{red,blue,none};
+// Defines Player types.
 typedef pair<int,int> Spot;
+// Defines a spot on Hex board
 typedef vector<Spot> Spots;
+// vector of Spots
 typedef pair<Spots,Spots> Walls;
+// pair of vectors of spots
+// used to keep track of each 
+// players walls needed to win
+
+
 
 class Hex{
 public:  
-  // constructor
+  // Constructor:
   Hex(int n=11);
 
-  // public methods
+  // Modifiers
   int make_move(int,int);
-  bool check_for_winner();
+  bool new_game();
 
-  int get_size() const;
-  Player curr_player() const;
-  bool is_game_over() const;
-  Player get_winner() const;
+  // Selectors
+  int    get_size()      const;
+  // return board dimensions
+  Spot   rand_move()     const;
+  // generate a random move
+  Player get_winner()    const;
+  // return game winner
+  Player curr_player()   const;
+  // return current turn's
+  // player
+  bool   is_game_over()  const;
+  void   display_board() const;
 
-  void display_board() const;
-  Spot rand_move() const;
   
 private:
   // state member variables
@@ -38,7 +55,8 @@ private:
   Walls red_walls;
   Walls blue_walls;
   
-  // methods to check board 'Spots' logic
+  bool check_for_winner();
+  // checks if last move won
   bool valid_spot(int,int) const;
   bool free_spot(int,int) const;
   Player player_on_spot(int,int) const;
