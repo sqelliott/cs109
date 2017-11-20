@@ -1,16 +1,15 @@
 Sean Elliott
 sqelliot
 23 October 2017
-asg3
+asg4
 CS 109
 
-Files: Graph.{cpp,h} ShortestPath.{cpp,h} Priority.h main.cpp
+Files: Hex.{cpp,h} main.cpp
 
 main.cpp:
-	Runs the Prim minimimum spanning tree algorithm on three graphs.
-	First takes my own 10-node graph from 'graph1.txt' to produce graph and
-	produce the corresponding MST.
-	Then produces a random graph wiht 100 nodes, 30% density and produces
-	that graphs corresponding MST.
-	Finally, takes the sample graph from coursera, and does the same.
-	Output of the process I ran saved to 'graph.out'
+	runs a sample random game of my Hex implentation. Displays the
+	board after each move is made. Shows error checking my not allowing	
+	players to make moves on occupied spots or illegal spots.
+	Once a player has reached both walls the game is set to end state,
+	and players are no longer allowed to make more moves. Displays the end board
+	and the winner.

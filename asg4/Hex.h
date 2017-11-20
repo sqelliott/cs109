@@ -29,17 +29,21 @@ public:
   bool new_game();
 
   // Selectors
-  int    get_size()      const;
+  inline int get_size() const;
   // return board dimensions
-  Spot   rand_move()     const;
+
+  Spot rand_move() const;
   // generate a random move
-  Player get_winner()    const;
+
+  Player get_winner() const;
   // return game winner
-  Player curr_player()   const;
+
+  Player curr_player() const;
   // return current turn's
   // player
-  bool   is_game_over()  const;
-  void   display_board() const;
+
+  bool is_game_over() const;
+  void display_board() const;
 
   
 private:
@@ -56,7 +60,6 @@ private:
   Walls blue_walls;
   
   bool check_for_winner();
-  // checks if last move won
   bool valid_spot(int,int) const;
   bool free_spot(int,int) const;
   Player player_on_spot(int,int) const;

@@ -14,6 +14,7 @@ Hex::Hex(int n) : size(n){
   }
 }
 
+// adds move to board
 int Hex::make_move(int row, int col){
   row -= 1;
   col -= 1;
@@ -35,6 +36,7 @@ int Hex::make_move(int row, int col){
 }
 
 
+// resets board and game state
 bool Hex::new_game(){
   if(is_game_over()){
     for(int i=0;i<get_size();++i){
@@ -54,7 +56,6 @@ bool Hex::new_game(){
   return false;
 }
 
-
 bool Hex::check_for_winner(){
   if(!is_game_over()){
     did_player_win();
@@ -63,7 +64,7 @@ bool Hex::check_for_winner(){
   return is_game_over();;
 }
 
-int Hex::get_size() const{
+inline int Hex::get_size() const{
   return this->size;
 }
 
@@ -78,9 +79,9 @@ void Hex::display_board() const{
     for(int col = 0; col < get_size(); ++col){
       Player p = player_on_spot(row,col);
       switch(p){
-        case Player::red  : cout << "X";
+        case Player::red  : cout << "R";
              break;
-        case Player::blue : cout << "O";
+        case Player::blue : cout << "B";
              break;
         default :
                   cout << ".";
@@ -138,7 +139,9 @@ Player Hex::player_on_spot(int r, int c) const{
 }
 
 
-
+// adds move to board
+// keeps track of moves added to players
+// walls
 void Hex::add_move(int row, int col){
    board[row][col] = curr_player();
    if(Player::red == curr_player()){
@@ -166,7 +169,8 @@ void Hex::end_turn(){
     this->player = Player::red;
 }
 
-
+// checks if current players walls
+// are connected
 bool Hex::did_player_win(){
   if(on_both_walls()){
     auto spots = get_wall();;
@@ -204,6 +208,7 @@ bool Hex::did_player_win(){
   return is_game_over();
 }
 
+// sets game state to over
 void Hex::game_is_over(){
   this->_game_over = true;
   this->winner = curr_player();
@@ -213,6 +218,8 @@ bool Hex::is_game_over() const{
   return this->_game_over;
 }
 
+// returns board spots adjacent to Spot s,
+// which match current player
 vector<Spot> Hex::get_spots_neigh(Spot s){
   int row = s.first;
   int col = s.second;
@@ -233,7 +240,8 @@ vector<Spot> Hex::get_spots_neigh(Spot s){
   return neigh;
 }
 
-
+// check if player occupies both of their walls
+// if not, they have not won
 bool Hex::on_both_walls(){
   if(Player::red == curr_player()){
     if(!(this->red_walls.first.empty() || 

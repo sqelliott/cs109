@@ -41,7 +41,5 @@ int main(){
     else{ cout << "BLUE\n";++blue;}
     game.new_game();
   }
-  cout << "RED:BLUE distr: " << red << " : " << blue << endl;
-  cout << "total: " << t << endl;
   return 0;
 }
