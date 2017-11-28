@@ -74,7 +74,7 @@ private:
   void game_is_over();
 
   vector<Spot> get_spots_neigh(Spot s);
-  bool  on_both_walls();
+  bool  on_both_walls(Board& b);
   bool  spot_connects_walls(Spot);
   Spots get_wall();
   bool  on_wall(Spot);
