@@ -56,6 +56,7 @@ private:
   bool _game_over = false;
   const int size;
   const int num_players;
+  Spots history;
 
   // Container to maintain spots occupied by a player
   // on their respective walls to win the game.
@@ -65,7 +66,7 @@ private:
   bool   check_for_winner();
   bool   valid_spot(int,int) const;
   bool   free_spot(int,int) const;
-  Player player_on_spot(int,int) const;
+  Player player_on_spot(int,int,Board) const;
 
   void add_move(int,int );
   void end_turn();
@@ -73,7 +74,7 @@ private:
 
   void game_is_over();
 
-  vector<Spot> get_spots_neigh(Spot s);
+  vector<Spot> get_spots_neigh(Spot s, Board);
   bool  on_both_walls();
   bool  spot_connects_walls(Spot);
   Spots get_wall();
@@ -81,9 +82,18 @@ private:
 
   // alpha beta
   void computers_move();
-  int  alpha_beta(Board&,Spot,int,int,int,bool);
-  bool winning_move(Board&,Spot);
-  int  move_evaluation(Board&,Spot);
+  int  alpha_beta(Board&,Spot&,int,int,int,bool);
+  bool winning_move(Board&);
+  bool losing_move(Board&);
+  int  move_evaluation(Board&, Spot& s);
+  int  dist_to_wall(Board&,Spot& s);
+  Spots blue_spots(Board&);
+  Spots red_spots(Board&);
+  Spots free_spots(Board&);
+
+  Spots blue_wall(Board&);
+  int longest_blue_path(Board&);
+
 };
 
 

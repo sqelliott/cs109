@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <limits>
+#include <stdlib.h>
 using namespace std;
 
 Hex::Hex(int n,int num_players) : size(n),num_players(num_players){
@@ -62,6 +63,10 @@ bool Hex::new_game(){
   return false;
 }
 
+inline int Hex::get_size() const{
+  return this->size;
+}
+
 bool Hex::check_for_winner(){
   if(!is_game_over()){
     did_player_win();
@@ -70,9 +75,6 @@ bool Hex::check_for_winner(){
   return is_game_over();;
 }
 
-inline int Hex::get_size() const{
-  return this->size;
-}
 
 Player Hex::curr_player() const{
   return this->player;
@@ -83,7 +85,7 @@ void Hex::display_board() const{
   for( int row = 0; row < get_size(); ++row, i+=2){
     for(int pad=0; pad < i; ++pad){cout << " ";}
     for(int col = 0; col < get_size(); ++col){
-      Player p = player_on_spot(row,col);
+      Player p = player_on_spot(row,col,this->board);
       switch(p){
         case Player::red  : cout << "R";
              break;
@@ -149,15 +151,15 @@ bool Hex::valid_spot(int r, int c) const{
 
 // free_spot()
 bool Hex::free_spot(int r,int c) const{
-  if( player_on_spot(r,c) != Player::none){
+  if( player_on_spot(r,c,this->board) != Player::none){
     return false;
   }
   return true;
 }
 
 //player_on_spot()
-Player Hex::player_on_spot(int r, int c) const{
-  return this->board[r][c];
+Player Hex::player_on_spot(int r, int c,Board b) const{
+  return b[r][c];
 }
 
 
@@ -182,6 +184,7 @@ void Hex::add_move(int row, int col){
        this->blue_walls.second.push_back(make_pair(row,col));
      }
    }
+   this->history.push_back(make_pair(row,col));
 }
 
 void Hex::end_turn(){
@@ -216,7 +219,7 @@ bool Hex::did_player_win(){
 
         visited.push_back(curr_spot);
 
-        vector<Spot> neigh = get_spots_neigh(curr_spot);
+        vector<Spot> neigh = get_spots_neigh(curr_spot,this->board);
         for(auto s : neigh){
           auto v_it = find(visited.begin(), visited.end(), s);
           auto e_it = find(edge_queue.begin(), edge_queue.end(),s);
@@ -242,7 +245,7 @@ bool Hex::is_game_over() const{
 
 // returns board spots adjacent to Spot s,
 // which match current player
-vector<Spot> Hex::get_spots_neigh(Spot s){
+vector<Spot> Hex::get_spots_neigh(Spot s, Board b){
   int row = s.first;
   int col = s.second;
   int n_row, n_col;
@@ -253,7 +256,7 @@ vector<Spot> Hex::get_spots_neigh(Spot s){
         n_row = row+drow;
         n_col = col+dcol;
         if( valid_spot(n_row,n_col) && 
-            curr_player() == player_on_spot(n_row,n_col)){
+            curr_player() == player_on_spot(n_row,n_col,b)){
           neigh.push_back( make_pair(n_row,n_col));
         }
       }
@@ -297,15 +300,16 @@ Spots Hex::get_wall(){
   if(Player::red == curr_player()){
     return this->red_walls.first;
   }
-  else
+  else{
     return this->blue_walls.first;
+  }
 }
 
 // alpha_beta
 void Hex::computers_move() {
   Spots       empty  = get_empty_spots(this->board);
   Board b = this->board;
-  vector<int> values(empty.size());
+  vector<int> values;
   for( Spot s : empty){
     Board b_instance = b;
     b_instance[s.first][s.second] = curr_player();
@@ -314,12 +318,14 @@ void Hex::computers_move() {
   }
   int index = distance(values.begin(), 
                                  max_element(values.begin(),values.end()));   
-  add_move(empty[index].first,empty[index].second);
+  int x = empty[index].first+1;
+  int y = empty[index].second+1;
+  make_move(x,y);
 }
 
 
-int Hex::alpha_beta(Board& b, Spot s, int depth, int alpha, int beta, bool AI){
-  if( depth == 0 || winning_move(b,s)){
+int Hex::alpha_beta(Board& b,Spot& s, int depth, int alpha, int beta, bool AI){
+  if( depth == 0 || winning_move(b) || losing_move(b)){
     return move_evaluation(b,s);
   }
   if(AI){
@@ -353,43 +359,201 @@ int Hex::alpha_beta(Board& b, Spot s, int depth, int alpha, int beta, bool AI){
   return 0;
 }
 
-int Hex::move_evaluation(Board& b, Spot s){
-  return 0;
+int Hex::move_evaluation(Board& b,Spot& s){
+  int value = 0;
+
+  if(winning_move(b)){
+    value += 10;
+  }
+  if(losing_move(b)){
+    value -= 8;
+  }
+
+  // longest blue chain from left wall
+  auto bw = blue_wall(b);
+
+  cout << value << endl;
+  return value;
 }
 
-bool Hex::winning_move(Board& b, Spot s){
-  if(on_both_walls()){
-    auto spots = get_wall();;
-    vector<Spot> visited;
-    vector<Spot> edge_queue;
-
-    // add all occupied spots by player 
-    for(auto it = spots.cbegin(); it != spots.cend(); ++it){
-      edge_queue.push_back(*it);
+// get blues left wall
+Spots Hex::blue_wall(Board& b){
+  Spots bw;
+  for(int i = 0; i < b.size(); ++i){
+    if(b[i][0] == Player::blue){
+      bw.push_back(make_pair(i,0));
     }
-    while(!edge_queue.empty()){
-      Spot curr_spot = edge_queue.front();
-      edge_queue.erase(edge_queue.begin());
-      auto it = find(visited.begin(), visited.end(), curr_spot);
-      if(it == visited.end()){
-        
-        if(spot_connects_walls(curr_spot)){
-          game_is_over();
-          return is_game_over();
-        }
+  }
+  return bw;
+}
 
-        visited.push_back(curr_spot);
+int Hex::longest_blue_path(Board& b){
+  Spots v, e;
+  vector<vector<int>> costs;
+  costs.resize(b.size())
+  for(int i=0; i < b.size(); ++i){
+    costs[i].resize(b.size());
+  }
+  vector<vector<Spot>> p;
+  p.resize(b.size());
+  for(int i = 0; i < b.size(); ++i){
+    p[i].resize(b.size(),make_pair(-1,-1));
+  }
 
-        vector<Spot> neigh = get_spots_neigh(curr_spot);
-        for(auto s : neigh){
-          auto v_it = find(visited.begin(), visited.end(), s);
-          auto e_it = find(edge_queue.begin(), edge_queue.end(),s);
-          if(v_it == visited.end() && e_it == edge_queue.end()){
-            edge_queue.push_back(s);
-          }
+  auto bw = blue_Wall(b);
+  while(!bw.empty()){
+    Spot curr_spot = bw.front();
+    bw.erase(bw.begin());
+
+    auto it = find(v.begin(),v.end(), curr_spot);
+    if(it == v.end()){
+      
+    }
+  }
+}
+
+Spots Hex::blue_spots(Board& b){
+  Spots blue;
+  for(int i = 0; i < b.size(); ++i){
+    for(int j = 0; j < b.size(); ++j){
+      if(b[i][j] == Player::blue){
+        blue.push_back(make_pair(i,j));
+      }
+    }
+  }
+  return blue;
+}
+
+Spots Hex::red_spots(Board& b){
+  Spots red;
+  for(int i = 0; i < b.size(); ++i){
+    for(int j = 0; j < b.size(); ++j){
+      if(b[i][j] == Player::red){
+        red.push_back(make_pair(i,j));
+      }
+    }
+  }
+  return red;
+}
+
+Spots Hex::free_spots(Board& b){
+  Spots free;
+  for(int i = 0; i < b.size(); ++i){
+    for(int j = 0; j < b.size(); ++j){
+      if(b[i][j] == Player::none){
+        free.push_back(make_pair(i,j));
+      }
+    }
+  }
+  return free;  
+}
+
+int Hex::dist_to_wall(Board& b, Spot& s){
+  vector<Spot> visited;
+  vector<Spot> edge_queue;
+  vector<vector<int>> costs;
+  costs.resize(b.size());
+  for(int i=0; i < b.size();i++){
+    costs[i].resize(b.size());
+  }
+
+  for(int i = 0; i < get_size(); ++i){
+    if(b[i][0] == Player::blue){
+      edge_queue.push_back(make_pair(i,0));
+    }
+  }
+  while(!edge_queue.empty()){
+    Spot curr_spot = edge_queue.front();
+    edge_queue.erase(edge_queue.begin());
+    auto it = find(visited.begin(), visited.end(), curr_spot);
+    if(it == visited.end()){
+      
+      if(curr_spot.second == get_size() -1){
+        return true;
+      }
+
+      visited.push_back(curr_spot);
+
+      vector<Spot> neigh = get_spots_neigh(curr_spot,b);
+      for(auto s : neigh){
+        auto v_it = find(visited.begin(), visited.end(), s);
+        auto e_it = find(edge_queue.begin(), edge_queue.end(),s);
+        if(v_it == visited.end() && e_it == edge_queue.end()){
+          edge_queue.push_back(s);
         }
       }
     }
   }
-  return is_game_over();
+
+  return false;
+}
+
+bool Hex::winning_move(Board& b){
+  vector<Spot> visited;
+  vector<Spot> edge_queue;
+
+  for(int i = 0; i < get_size(); ++i){
+    if(b[i][0] == Player::blue){
+      edge_queue.push_back(make_pair(i,0));
+    }
+  }
+  while(!edge_queue.empty()){
+    Spot curr_spot = edge_queue.front();
+    edge_queue.erase(edge_queue.begin());
+    auto it = find(visited.begin(), visited.end(), curr_spot);
+    if(it == visited.end()){
+      
+      if(curr_spot.second == get_size() -1){
+        return true;
+      }
+
+      visited.push_back(curr_spot);
+
+      vector<Spot> neigh = get_spots_neigh(curr_spot,b);
+      for(auto s : neigh){
+        auto v_it = find(visited.begin(), visited.end(), s);
+        auto e_it = find(edge_queue.begin(), edge_queue.end(),s);
+        if(v_it == visited.end() && e_it == edge_queue.end()){
+          edge_queue.push_back(s);
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+bool Hex::losing_move(Board& b){
+  vector<Spot> visited;
+  vector<Spot> edge_queue;
+
+  for(int i = 0; i < get_size(); ++i){
+    if(b[0][i] == Player::red){
+      edge_queue.push_back(make_pair(0,i));
+    }
+  }
+  while(!edge_queue.empty()){
+    Spot curr_spot = edge_queue.front();
+    edge_queue.erase(edge_queue.begin());
+    auto it = find(visited.begin(), visited.end(), curr_spot);
+    if(it == visited.end()){
+      
+      if(curr_spot.first == get_size() -1){
+        return true;
+      }
+
+      visited.push_back(curr_spot);
+
+      vector<Spot> neigh = get_spots_neigh(curr_spot,b);
+      for(auto s : neigh){
+        auto v_it = find(visited.begin(), visited.end(), s);
+        auto e_it = find(edge_queue.begin(), edge_queue.end(),s);
+        if(v_it == visited.end() && e_it == edge_queue.end()){
+          edge_queue.push_back(s);
+        }
+      }
+    }
+  }
+
+  return false;
 }
