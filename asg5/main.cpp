@@ -9,7 +9,7 @@
 
 int main(){
 
-  Hex game(4);
+  Hex game(5);
   cout << "Playing Hex on a " << game.get_size() << " x "
        << game.get_size() << " board\n";
   game.display_board();
@@ -22,11 +22,11 @@ int main(){
     cout << "'s turn\n";
     int res;
     do{
-      //cout << "Enter your Move: ";
-      //cin >> r >> y;
-      Spot s = game.rand_move();
-      r = s.first;
-      y = s.second;
+      cout << "Enter your Move: ";
+      cin >> r >> y;
+      //Spot s = game.rand_move();
+      //r = s.first;
+      //y = s.second;
       res = game.make_move(r,y);
       if(res == -1){
         cout << "Hex: illegal move ("<<r<<","<<y<<endl;

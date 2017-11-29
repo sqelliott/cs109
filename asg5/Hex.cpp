@@ -35,7 +35,9 @@ int Hex::make_move(int row, int col){
     check_for_winner();
     if( !is_game_over() &&
         get_num_players() == 1 && 
-        curr_player() == Player::blue){
+        curr_player() == Player::blue
+      ){
+      cout << "Calculating move...\n";
       computers_move();
     }
   }
@@ -321,6 +323,7 @@ void Hex::computers_move() {
   int x = empty[index].first+1;
   int y = empty[index].second+1;
   make_move(x,y);
+  cout << endl;
 }
 
 
@@ -366,13 +369,18 @@ int Hex::move_evaluation(Board& b,Spot& s){
     value += 10;
   }
   if(losing_move(b)){
-    value -= 8;
+    value -= 10;
+  }
+
+  // average move towards middle
+  auto bw = blue_spots(b);
+  for(int i = 0; i < bw.size();++i){
+    value = value - abs((bw[i].first - b.size()/2));
   }
 
   // longest blue chain from left wall
-  auto bw = blue_wall(b);
-
-  cout << value << endl;
+  value += longest_blue_path(b);
+  //cout << value << endl;
   return value;
 }
 
@@ -389,27 +397,38 @@ Spots Hex::blue_wall(Board& b){
 
 int Hex::longest_blue_path(Board& b){
   Spots v, e;
-  vector<vector<int>> costs;
-  costs.resize(b.size())
+  vector<vector<int>> values;//higher values for connectivity
+  values.resize(b.size());
   for(int i=0; i < b.size(); ++i){
-    costs[i].resize(b.size());
+    values[i].resize(b.size());
   }
-  vector<vector<Spot>> p;
+  vector<vector<Spot>> p;//parents
   p.resize(b.size());
   for(int i = 0; i < b.size(); ++i){
     p[i].resize(b.size(),make_pair(-1,-1));
   }
 
-  auto bw = blue_Wall(b);
+  auto bw = blue_spots(b);//get blue left walls
   while(!bw.empty()){
     Spot curr_spot = bw.front();
     bw.erase(bw.begin());
 
-    auto it = find(v.begin(),v.end(), curr_spot);
-    if(it == v.end()){
-      
+    Spots neighbors = get_spots_neigh(curr_spot,b);
+    for(auto n : neighbors){
+      int value = values[curr_spot.first][curr_spot.second] +
+                  (n.second - curr_spot.second);
+      values[n.first][n.second] = value;
     }
   }
+  int max = 0;
+  for(int i = 0; i < values.size();++i){
+    for(int j = 0; j < values.size();++j){
+      if( values[i][j] > max){
+        max = values[i][j];
+      }
+    }
+  }
+  return max;
 }
 
 Spots Hex::blue_spots(Board& b){
