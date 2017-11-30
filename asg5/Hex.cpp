@@ -221,7 +221,7 @@ bool Hex::did_player_win(){
 
         visited.push_back(curr_spot);
 
-        vector<Spot> neigh = get_spots_neigh(curr_spot,this->board);
+        vector<Spot> neigh = get_spots_neigh(curr_spot,this->board,curr_player());
         for(auto s : neigh){
           auto v_it = find(visited.begin(), visited.end(), s);
           auto e_it = find(edge_queue.begin(), edge_queue.end(),s);
@@ -247,7 +247,7 @@ bool Hex::is_game_over() const{
 
 // returns board spots adjacent to Spot s,
 // which match current player
-vector<Spot> Hex::get_spots_neigh(Spot s, Board b){
+vector<Spot> Hex::get_spots_neigh(Spot s, Board b,Player p){
   int row = s.first;
   int col = s.second;
   int n_row, n_col;
@@ -258,7 +258,7 @@ vector<Spot> Hex::get_spots_neigh(Spot s, Board b){
         n_row = row+drow;
         n_col = col+dcol;
         if( valid_spot(n_row,n_col) && 
-            curr_player() == player_on_spot(n_row,n_col,b)){
+            p == player_on_spot(n_row,n_col,b)){
           neigh.push_back( make_pair(n_row,n_col));
         }
       }
@@ -315,7 +315,7 @@ void Hex::computers_move() {
   for( Spot s : empty){
     Board b_instance = b;
     b_instance[s.first][s.second] = curr_player();
-    int v = alpha_beta(b_instance,s,3,numeric_limits<int>::min(),numeric_limits<int>::max(),true);
+    int v = alpha_beta(b_instance,s,2,numeric_limits<int>::min(),numeric_limits<int>::max(),true);
     values.push_back(v);
   }
   int index = distance(values.begin(), 
@@ -366,7 +366,7 @@ int Hex::move_evaluation(Board& b,Spot& s){
   int value = 0;
 
   if(winning_move(b)){
-    value += 10;
+    value += 100;
   }
   if(losing_move(b)){
     value -= 10;
@@ -374,12 +374,16 @@ int Hex::move_evaluation(Board& b,Spot& s){
 
   // average move towards middle
   auto bw = blue_spots(b);
-  for(int i = 0; i < bw.size();++i){
-    value = value - abs((bw[i].first - b.size()/2));
+  int mid = b.size()/2;
+  int tmp = 0;
+  for(Spot s : bw){
+    tmp -= abs(s.first - mid);
   }
+  value -= tmp/10;
 
   // longest blue chain from left wall
   value += longest_blue_path(b);
+  value -= longest_red_path(b);
   //cout << value << endl;
   return value;
 }
@@ -413,10 +417,10 @@ int Hex::longest_blue_path(Board& b){
     Spot curr_spot = bw.front();
     bw.erase(bw.begin());
 
-    Spots neighbors = get_spots_neigh(curr_spot,b);
+    Spots neighbors = get_spots_neigh(curr_spot,b,Player::blue);
     for(auto n : neighbors){
       int value = values[curr_spot.first][curr_spot.second] +
-                  (n.second - curr_spot.second);
+                  (n.second - curr_spot.second) + 1;
       values[n.first][n.second] = value;
     }
   }
@@ -430,6 +434,44 @@ int Hex::longest_blue_path(Board& b){
   }
   return max;
 }
+
+
+int Hex::longest_red_path(Board& b){
+  Spots v, e;
+  vector<vector<int>> values;//higher values for connectivity
+  values.resize(b.size());
+  for(int i=0; i < b.size(); ++i){
+    values[i].resize(b.size());
+  }
+  vector<vector<Spot>> p;//parents
+  p.resize(b.size());
+  for(int i = 0; i < b.size(); ++i){
+    p[i].resize(b.size(),make_pair(-1,-1));
+  }
+
+  auto bw = red_spots(b);//get blue left walls
+  while(!bw.empty()){
+    Spot curr_spot = bw.front();
+    bw.erase(bw.begin());
+
+    Spots neighbors = get_spots_neigh(curr_spot,b,Player::red);
+    for(auto n : neighbors){
+      int value = values[curr_spot.first][curr_spot.second] +
+                  1;
+      values[n.first][n.second] = value;
+    }
+  }
+  int max = 0;
+  for(int i = 0; i < values.size();++i){
+    for(int j = 0; j < values.size();++j){
+      if( values[i][j] > max){
+        max = values[i][j];
+      }
+    }
+  }
+  return max;
+}
+
 
 Spots Hex::blue_spots(Board& b){
   Spots blue;
@@ -493,7 +535,7 @@ int Hex::dist_to_wall(Board& b, Spot& s){
 
       visited.push_back(curr_spot);
 
-      vector<Spot> neigh = get_spots_neigh(curr_spot,b);
+      vector<Spot> neigh = get_spots_neigh(curr_spot,b,Player::blue);
       for(auto s : neigh){
         auto v_it = find(visited.begin(), visited.end(), s);
         auto e_it = find(edge_queue.begin(), edge_queue.end(),s);
@@ -521,14 +563,13 @@ bool Hex::winning_move(Board& b){
     edge_queue.erase(edge_queue.begin());
     auto it = find(visited.begin(), visited.end(), curr_spot);
     if(it == visited.end()){
-      
-      if(curr_spot.second == get_size() -1){
+      if(curr_spot.second == get_size()-1){
         return true;
       }
 
       visited.push_back(curr_spot);
 
-      vector<Spot> neigh = get_spots_neigh(curr_spot,b);
+      vector<Spot> neigh = get_spots_neigh(curr_spot,b,Player::blue);
       for(auto s : neigh){
         auto v_it = find(visited.begin(), visited.end(), s);
         auto e_it = find(edge_queue.begin(), edge_queue.end(),s);
@@ -563,7 +604,7 @@ bool Hex::losing_move(Board& b){
 
       visited.push_back(curr_spot);
 
-      vector<Spot> neigh = get_spots_neigh(curr_spot,b);
+      vector<Spot> neigh = get_spots_neigh(curr_spot,b,Player::blue);
       for(auto s : neigh){
         auto v_it = find(visited.begin(), visited.end(), s);
         auto e_it = find(edge_queue.begin(), edge_queue.end(),s);

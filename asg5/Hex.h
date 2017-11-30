@@ -74,7 +74,7 @@ private:
 
   void game_is_over();
 
-  vector<Spot> get_spots_neigh(Spot s, Board);
+  vector<Spot> get_spots_neigh(Spot s, Board,Player p);
   bool  on_both_walls();
   bool  spot_connects_walls(Spot);
   Spots get_wall();
@@ -93,6 +93,7 @@ private:
 
   Spots blue_wall(Board&);
   int longest_blue_path(Board&);
+  int longest_red_path(Board&);
 
 };
 
