@@ -9,7 +9,7 @@
 
 int main(){
 
-  Hex game(5);
+  Hex game(7);
   cout << "Playing Hex on a " << game.get_size() << " x "
        << game.get_size() << " board\n";
   game.display_board();
